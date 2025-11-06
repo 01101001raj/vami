@@ -4,7 +4,7 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
 # Database & Auth
-supabase>=0.24.1,<0.25.1
+supabase>=2.3.0,<3.0.0
 psycopg2-binary==2.9.9
 
 # Data Validation
