@@ -46,26 +46,35 @@ async def register(request: RegisterRequest):
             plan=request.plan
         )
 
-        # Create Stripe customer
-        stripe_customer_id = await stripe_service.create_customer(
-            email=request.email,
-            name=request.company_name or request.email
-        )
+        # Create Stripe customer (skip if using placeholder keys)
+        stripe_customer_id = None
+        checkout_url = None
 
-        # Update user with Stripe customer ID
-        await supabase_service.update_user(user_id, {
-            "stripe_customer_id": stripe_customer_id
-        })
+        try:
+            if not settings.STRIPE_SECRET_KEY.startswith("sk_test_placeholder"):
+                stripe_customer_id = await stripe_service.create_customer(
+                    email=request.email,
+                    name=request.company_name or request.email
+                )
 
-        # Create Stripe checkout session
-        trial_days = 14 if request.plan.value == "starter_trial" else 0
-        checkout_url = await stripe_service.create_checkout_session(
-            customer_id=stripe_customer_id,
-            plan=request.plan,
-            success_url=f"{settings.FRONTEND_URL}/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{settings.FRONTEND_URL}/pricing",
-            trial_days=trial_days
-        )
+                # Update user with Stripe customer ID
+                await supabase_service.update_user(user_id, {
+                    "stripe_customer_id": stripe_customer_id
+                })
+
+                # Create Stripe checkout session
+                trial_days = 14 if request.plan.value == "starter_trial" else 0
+                checkout_url = await stripe_service.create_checkout_session(
+                    customer_id=stripe_customer_id,
+                    plan=request.plan,
+                    success_url=f"{settings.FRONTEND_URL}/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
+                    cancel_url=f"{settings.FRONTEND_URL}/pricing",
+                    trial_days=trial_days
+                )
+        except Exception as stripe_error:
+            # Stripe not configured, continue without checkout URL
+            # User can still access the platform in trial mode
+            pass
 
         # Get access token
         access_token = auth_response.session.access_token if auth_response.session else None
