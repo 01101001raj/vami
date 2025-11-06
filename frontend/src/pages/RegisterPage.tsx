@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
+import { useAuthStore } from '../store/authStore';
 
 interface RegisterForm {
   email: string;
@@ -11,6 +12,8 @@ interface RegisterForm {
 }
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+  const { setUser } = useAuthStore();
   const [error, setError] = useState('');
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
     defaultValues: { plan: 'starter_trial' }
@@ -21,9 +24,18 @@ export default function RegisterPage() {
       setError('');
       const response = await authAPI.register(data);
 
+      // Save access token and user data
+      if (response.data.access_token) {
+        localStorage.setItem('access_token', response.data.access_token);
+      }
+      setUser(response.data.user);
+
       if (response.data.checkout_url) {
-        // Redirect to Stripe checkout
+        // Redirect to Stripe checkout for payment setup
         window.location.href = response.data.checkout_url;
+      } else {
+        // No payment needed, go straight to dashboard (trial mode)
+        navigate('/dashboard');
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
@@ -99,7 +111,7 @@ export default function RegisterPage() {
               disabled={isSubmitting}
               className="btn btn-primary w-full"
             >
-              {isSubmitting ? 'Creating account...' : 'Continue to Payment'}
+              {isSubmitting ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
 
