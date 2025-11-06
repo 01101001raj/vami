@@ -15,7 +15,8 @@
       "Bash(venv/Scripts/pip install:*)",
       "Bash(venv/Scripts/uvicorn app.main:app --reload)",
       "Bash(curl:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(venv/Scripts/python:*)"
     ],
     "deny": [],
     "ask": []

@@ -42,6 +42,9 @@ export const authAPI = {
   logout: () => api.post('/auth/logout'),
 
   getMe: () => api.get<User>('/auth/me'),
+
+  forgotPassword: (email: string) =>
+    api.post('/auth/forgot-password', null, { params: { email } }),
 };
 
 // Agent API
