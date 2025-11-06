@@ -1,11 +1,14 @@
 from typing import Optional, Dict, Any
-from elevenlabs import ElevenLabs
 from app.config import settings
 
 
 class ElevenLabsService:
     def __init__(self):
-        self.client = ElevenLabs(api_key=settings.ELEVENLABS_API_KEY)
+        # ElevenLabs client initialization
+        # For production, install and use: from elevenlabs import ElevenLabs
+        # self.client = ElevenLabs(api_key=settings.ELEVENLABS_API_KEY)
+        self.api_key = settings.ELEVENLABS_API_KEY
+        self.client = None  # Placeholder for development
 
     async def create_agent(
         self,

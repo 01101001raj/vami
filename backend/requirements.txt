@@ -15,8 +15,8 @@ email-validator==2.1.0
 # Payment Processing
 stripe==7.6.0
 
-# Voice AI
-elevenlabs==1.0.0
+# Voice AI (optional - uncomment when you have API key)
+# elevenlabs>=1.2.0
 
 # Communication
 sendgrid==6.10.0
