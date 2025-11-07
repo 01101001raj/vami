@@ -30,28 +30,42 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-h1 text-gradient-emerald mb-2">
-          Dashboard
-        </h1>
-        <p className="text-body text-slate-600">Welcome back, {user?.company_name || user?.email}</p>
+    <div className="space-y-8 p-8">
+      {/* Page Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-h1 text-slate-900 mb-2">
+            Dashboard
+          </h1>
+          <p className="text-body text-slate-600">Plan, prioritize, and manage your AI agent with ease.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button className="btn btn-primary">
+            <Phone className="w-4 h-4" />
+            Start Call
+          </button>
+          <button className="btn btn-secondary">
+            <Upload className="w-4 h-4" />
+            Import Data
+          </button>
+        </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Calls */}
-        <div className="metric-card">
+        {/* Total Calls - Featured Card */}
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl">
-              <Phone className="w-6 h-6 text-primary-600" />
+            <p className="text-sm font-medium opacity-90">Total Calls</p>
+            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+              <Phone className="w-5 h-5" />
             </div>
-            <span className="badge badge-success">+12%</span>
           </div>
-          <p className="metric-label">Total Calls</p>
-          <p className="metric-value">{stats?.total_conversations || 0}</p>
-          <p className="text-caption text-slate-500 mt-2">Last 7 days</p>
+          <p className="text-4xl font-bold mb-2">{stats?.total_conversations || 0}</p>
+          <div className="flex items-center gap-2 text-sm opacity-90">
+            <TrendingUp className="w-4 h-4" />
+            <span>Increased from last month</span>
+          </div>
         </div>
 
         {/* Minutes Used */}

@@ -77,10 +77,10 @@ export default function BillingPage() {
   const features = planFeatures[currentPlan as keyof typeof planFeatures] || planFeatures.starter;
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 p-8">
       {/* Header */}
       <div>
-        <h1 className="text-h1 text-gradient-emerald mb-2">
+        <h1 className="text-h1 text-slate-900 mb-2">
           Billing & Subscription
         </h1>
         <p className="text-body text-slate-600">Manage your plan, billing, and usage</p>

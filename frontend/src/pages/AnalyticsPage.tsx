@@ -43,22 +43,22 @@ export default function AnalyticsPage() {
   const positiveSentiment = conversations.filter(c => c.sentiment === 'positive').length;
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 p-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-h1 text-gradient-emerald mb-2">
+          <h1 className="text-h1 text-slate-900 mb-2">
             Analytics
           </h1>
           <p className="text-body text-slate-600">Detailed insights into your call performance</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <button className="btn btn-secondary btn-sm">
-            <Filter className="w-4 h-4 mr-2" />
+        <div className="flex items-center gap-3">
+          <button className="btn btn-secondary">
+            <Filter className="w-4 h-4" />
             Filter
           </button>
-          <button className="btn btn-primary btn-sm">
-            <Download className="w-4 h-4 mr-2" />
+          <button className="btn btn-primary">
+            <Download className="w-4 h-4" />
             Export
           </button>
         </div>
