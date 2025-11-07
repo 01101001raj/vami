@@ -44,11 +44,11 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-50 px-4 py-12">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl mb-4 shadow-lg shadow-primary-600/30">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl mb-4 shadow-lg shadow-emerald-600/30">
             <span className="text-2xl font-bold text-white">V</span>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Join Vami</h1>
@@ -81,7 +81,7 @@ export default function RegisterPage() {
                 <input
                   type="text"
                   {...register('company_name', { required: 'Company name is required' })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   placeholder="Acme Medical Center"
                 />
               </div>
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                 <input
                   type="email"
                   {...register('email', { required: 'Email is required' })}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   placeholder="you@company.com"
                 />
               </div>
@@ -140,7 +140,7 @@ export default function RegisterPage() {
                     required: 'Password is required',
                     minLength: { value: 8, message: 'Password must be at least 8 characters' }
                   })}
-                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
                 <button
@@ -174,7 +174,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/30 hover:shadow-xl hover:shadow-primary-600/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {isSubmitting ? (
                 <>
@@ -197,9 +197,9 @@ export default function RegisterPage() {
             {/* Terms */}
             <p className="text-xs text-center text-gray-500">
               By creating an account, you agree to our{' '}
-              <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">Terms of Service</a>
+              <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">Terms of Service</a>
               {' '}and{' '}
-              <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">Privacy Policy</a>
+              <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">Privacy Policy</a>
             </p>
           </form>
 
@@ -209,7 +209,7 @@ export default function RegisterPage() {
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="text-primary-600 hover:text-primary-700 font-semibold transition-colors"
+                className="text-emerald-600 hover:text-emerald-700 font-semibold transition-colors"
               >
                 Sign in
               </Link>

@@ -23,12 +23,12 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-emerald-50 px-4">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/login" className="inline-block mb-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl shadow-lg shadow-primary-600/30 hover:shadow-primary-600/40 transition-shadow">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 transition-shadow">
               <span className="text-2xl font-bold text-white">V</span>
             </div>
           </Link>
@@ -55,14 +55,14 @@ export default function ForgotPasswordPage() {
                   Didn't receive the email? Check your spam folder or{' '}
                   <button
                     onClick={() => setSuccess(false)}
-                    className="text-primary-600 hover:text-primary-700 font-medium"
+                    className="text-emerald-600 hover:text-emerald-700 font-medium"
                   >
                     try again
                   </button>
                 </p>
                 <Link
                   to="/login"
-                  className="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+                  className="inline-flex items-center text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -96,7 +96,7 @@ export default function ForgotPasswordPage() {
                   <input
                     type="email"
                     {...register('email', { required: 'Email is required' })}
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                     placeholder="you@company.com"
                   />
                 </div>
@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/30 hover:shadow-xl hover:shadow-primary-600/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-xl shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:shadow-emerald-600/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isSubmitting ? (
                   <>
@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
         <div className="mt-8 text-center">
           <p className="text-xs text-gray-500">
             Need help?{' '}
-            <a href="mailto:support@vami.app" className="text-primary-600 hover:text-primary-700 font-medium">
+            <a href="mailto:support@vami.app" className="text-emerald-600 hover:text-emerald-700 font-medium">
               Contact support
             </a>
           </p>
