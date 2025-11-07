@@ -77,13 +77,13 @@ export default function BillingPage() {
   const features = planFeatures[currentPlan as keyof typeof planFeatures] || planFeatures.starter;
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-8 p-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+      <div>
+        <h1 className="text-h1 text-gradient-emerald mb-2">
           Billing & Subscription
         </h1>
-        <p className="mt-2 text-gray-600">Manage your plan, billing, and usage</p>
+        <p className="text-body text-slate-600">Manage your plan, billing, and usage</p>
       </div>
 
       {/* Current Plan Card */}
@@ -169,55 +169,55 @@ export default function BillingPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div className="metric-card">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
+            <div className="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
               <DollarSign className="w-6 h-6 text-blue-600" />
             </div>
           </div>
-          <p className="text-sm font-medium text-gray-600 mb-1">Current Bill</p>
-          <p className="text-3xl font-bold text-gray-900">
+          <p className="metric-label">Current Bill</p>
+          <p className="metric-value">
             ${currentPlan === 'starter' || currentPlan === 'basic' ? '99' :
               currentPlan === 'professional' ? '500' : '1,499'}
           </p>
-          <p className="text-xs text-blue-600 mt-2 font-medium">Due on billing date</p>
+          <p className="text-caption text-blue-600 font-medium mt-2">Due on billing date</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div className="metric-card">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl">
-              <TrendingUp className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl">
+              <TrendingUp className="w-6 h-6 text-primary-600" />
             </div>
           </div>
-          <p className="text-sm font-medium text-gray-600 mb-1">Usage Trend</p>
-          <p className="text-3xl font-bold text-gray-900">
+          <p className="metric-label">Usage Trend</p>
+          <p className="metric-value">
             {usage ? (usage.percentage_used > 50 ? '+' : '') : ''}
             {usage ? Math.round(usage.percentage_used - 50) : 0}%
           </p>
-          <p className="text-xs text-green-600 mt-2 font-medium">vs last month</p>
+          <p className="text-caption text-primary-600 font-medium mt-2">vs last month</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div className="metric-card">
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl">
+            <div className="p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
               <Calendar className="w-6 h-6 text-purple-600" />
             </div>
           </div>
-          <p className="text-sm font-medium text-gray-600 mb-1">Next Billing</p>
-          <p className="text-3xl font-bold text-gray-900">
+          <p className="metric-label">Next Billing</p>
+          <p className="metric-value">
             {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).getDate()}
           </p>
-          <p className="text-xs text-purple-600 mt-2 font-medium">
+          <p className="text-caption text-purple-600 font-medium mt-2">
             {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
           </p>
         </div>
       </div>
 
       {/* Plan Features */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
-          <h2 className="text-xl font-bold text-gray-900">Your Plan Features</h2>
-          <p className="text-sm text-gray-600 mt-1">Everything included in your {currentPlan} plan</p>
+      <div className="card p-0 overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50">
+          <h2 className="text-h2 text-slate-900">Your Plan Features</h2>
+          <p className="text-body-sm text-slate-600 mt-1">Everything included in your {currentPlan} plan</p>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,18 +226,18 @@ export default function BillingPage() {
                 key={index}
                 className={`flex items-start space-x-3 p-4 rounded-xl ${
                   feature.included
-                    ? 'bg-emerald-50 border border-emerald-100'
-                    : 'bg-gray-50 border border-gray-100'
+                    ? 'bg-primary-50 border border-primary-100'
+                    : 'bg-slate-50 border border-slate-100'
                 }`}
               >
                 {feature.included ? (
-                  <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                  <XCircle className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
                 )}
                 <div>
-                  <p className={`text-sm font-semibold ${
-                    feature.included ? 'text-emerald-900' : 'text-gray-500'
+                  <p className={`text-body-sm font-semibold ${
+                    feature.included ? 'text-primary-900' : 'text-slate-500'
                   }`}>
                     {feature.name}
                   </p>
@@ -277,18 +277,18 @@ export default function BillingPage() {
       )}
 
       {/* Billing History */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900">Billing History</h2>
-          <p className="text-sm text-gray-600 mt-1">Your recent invoices and payments</p>
+      <div className="card p-0 overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h2 className="text-h2 text-slate-900">Billing History</h2>
+          <p className="text-body-sm text-slate-600 mt-1">Your recent invoices and payments</p>
         </div>
         <div className="p-6">
           <div className="text-center py-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-              <CreditCard className="w-8 h-8 text-gray-400" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 rounded-full mb-4">
+              <CreditCard className="w-8 h-8 text-slate-400" />
             </div>
-            <p className="text-gray-900 font-medium text-lg mb-1">No billing history yet</p>
-            <p className="text-gray-500 text-sm">Your invoices will appear here once billing starts</p>
+            <p className="text-slate-900 font-semibold text-body-lg mb-1">No billing history yet</p>
+            <p className="text-slate-500 text-body-sm">Your invoices will appear here once billing starts</p>
           </div>
         </div>
       </div>
