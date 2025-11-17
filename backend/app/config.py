@@ -6,7 +6,7 @@ import json
 class Settings(BaseSettings):
     # Application
     APP_NAME: str = "Vami Platform"
-    DEBUG: bool = True
+    DEBUG: bool = False
     SECRET_KEY: str
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000

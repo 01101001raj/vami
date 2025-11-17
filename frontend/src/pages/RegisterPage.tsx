@@ -2,12 +2,17 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
+import { AxiosError } from 'axios';
 
 interface RegisterForm {
   email: string;
   password: string;
   company_name: string;
   plan: string;
+}
+
+interface ApiError {
+  detail: string;
 }
 
 export default function RegisterPage() {
@@ -25,8 +30,9 @@ export default function RegisterPage() {
         // Redirect to Stripe checkout
         window.location.href = response.data.checkout_url;
       }
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Registration failed. Please try again.');
+    } catch (err) {
+      const axiosError = err as AxiosError<ApiError>;
+      setError(axiosError.response?.data?.detail || 'Registration failed. Please try again.');
     }
   };
 
@@ -84,7 +90,11 @@ export default function RegisterPage() {
                 type="password"
                 {...register('password', {
                   required: 'Password is required',
-                  minLength: { value: 8, message: 'Password must be at least 8 characters' }
+                  minLength: { value: 8, message: 'Password must be at least 8 characters' },
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
+                    message: 'Password must include uppercase, lowercase, number, and special character'
+                  }
                 })}
                 className="input"
                 placeholder="••••••••"
@@ -92,6 +102,9 @@ export default function RegisterPage() {
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                Must be at least 8 characters with uppercase, lowercase, number, and special character
+              </p>
             </div>
 
             <button

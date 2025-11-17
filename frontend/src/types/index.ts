@@ -32,13 +32,24 @@ export interface UserFeatures {
   dedicated_account_manager: boolean;
 }
 
+export interface ElevenLabsMetadata {
+  name: string;
+  prompt: string;
+  voice?: {
+    voice_id: string;
+  };
+  language?: string;
+  conversation_config?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
 export interface Agent {
   id: number;
   user_id: string;
   agent_id: string;
   agent_name: string;
   status: string;
-  elevenlabs_metadata?: any;
+  elevenlabs_metadata?: ElevenLabsMetadata;
   created_at: string;
   updated_at: string;
 }
@@ -70,4 +81,18 @@ export interface AuthResponse {
   token_type: string;
   user: User;
   checkout_url?: string;
+}
+
+export interface AgentUpdateData {
+  agent_name?: string;
+  status?: string;
+  elevenlabs_metadata?: Partial<ElevenLabsMetadata>;
+}
+
+export interface DashboardStats {
+  total_calls: number;
+  total_minutes: number;
+  successful_calls: number;
+  success_rate: number;
+  avg_duration_secs: number;
 }

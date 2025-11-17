@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Phone, Clock, TrendingUp, Calendar } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { billingAPI, agentAPI, analyticsAPI } from '../services/api';
-import type { Usage, Agent } from '../types';
+import type { Usage, Agent, DashboardStats } from '../types';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const [usage, setUsage] = useState<Usage | null>(null);
   const [agent, setAgent] = useState<Agent | null>(null);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,16 +129,13 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <div className="card">
         <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="btn btn-primary">
-            Upload Knowledge Base
-          </button>
-          <button className="btn btn-secondary">
-            Connect Calendar
-          </button>
-          <button className="btn btn-secondary">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link to="/settings" className="btn btn-secondary text-center">
+            Configure Agent Settings
+          </Link>
+          <Link to="/analytics" className="btn btn-secondary text-center">
             View Analytics
-          </button>
+          </Link>
         </div>
       </div>
     </div>

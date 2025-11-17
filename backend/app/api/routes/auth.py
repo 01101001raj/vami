@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from app.schemas.auth import RegisterRequest, LoginRequest, AuthResponse
 from app.services.supabase_service import supabase_service
 from app.services.stripe_service import stripe_service
@@ -8,12 +8,17 @@ from app.database import get_supabase
 from app.config import settings
 from app.api.deps import get_current_user
 from app.models.user import User
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/register", response_model=AuthResponse)
-async def register(request: RegisterRequest):
+@limiter.limit("5/minute")
+async def register(http_request: Request, request: RegisterRequest):
     """
     Register a new user
     1. Create Supabase auth user
@@ -84,7 +89,8 @@ async def register(request: RegisterRequest):
 
 
 @router.post("/login", response_model=AuthResponse)
-async def login(request: LoginRequest):
+@limiter.limit("10/minute")
+async def login(http_request: Request, request: LoginRequest):
     """
     Login existing user
     """
@@ -157,7 +163,8 @@ async def get_me(user: User = Depends(get_current_user)):
 
 
 @router.post("/forgot-password")
-async def forgot_password(email: str):
+@limiter.limit("3/hour")
+async def forgot_password(http_request: Request, email: str):
     """
     Send password reset email
     """
@@ -171,14 +178,37 @@ async def forgot_password(email: str):
 
 
 @router.post("/reset-password")
-async def reset_password(token: str, new_password: str):
+@limiter.limit("5/hour")
+async def reset_password(http_request: Request, token: str, new_password: str):
     """
     Reset password with token
     """
     try:
         supabase = get_supabase()
+
+        # Verify and use the reset token
+        # The token should be set as the auth token before updating password
+        try:
+            # Attempt to verify token by getting user with it
+            verify_response = supabase.auth.get_user(token)
+            if not verify_response.user:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid or expired reset token"
+                )
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid or expired reset token"
+            )
+
+        # Set the session with the reset token and update password
+        supabase.auth.set_session(token, token)
         supabase.auth.update_user({"password": new_password})
+
         return {"message": "Password reset successfully"}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

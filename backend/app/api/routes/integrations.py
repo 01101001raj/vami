@@ -4,23 +4,49 @@ from app.services.supabase_service import supabase_service
 from app.api.deps import get_current_user
 from app.models.user import User
 import secrets
+from datetime import datetime, timedelta
 
 router = APIRouter(prefix="/integrations", tags=["Integrations"])
+
+# In-memory state storage (use Redis in production)
+oauth_states = {}
 
 
 @router.get("/google/auth-url")
 async def get_google_auth_url(user: User = Depends(get_current_user)):
     """Get Google OAuth authorization URL"""
     state = secrets.token_urlsafe(32)
-    # Store state in session/cache for verification
+    # Store state with user_id and expiration (5 minutes)
+    oauth_states[state] = {
+        "user_id": str(user.id),
+        "expires_at": datetime.utcnow() + timedelta(minutes=5)
+    }
     auth_url = calendar_service.get_authorization_url(state)
     return {"auth_url": auth_url, "state": state}
 
 
 @router.post("/google/callback")
-async def google_callback(code: str, user: User = Depends(get_current_user)):
+async def google_callback(code: str, state: str, user: User = Depends(get_current_user)):
     """Handle Google OAuth callback"""
     try:
+        # Validate state token
+        if state not in oauth_states:
+            raise HTTPException(status_code=400, detail="Invalid or expired state token")
+
+        stored_state = oauth_states[state]
+
+        # Check expiration
+        if datetime.utcnow() > stored_state["expires_at"]:
+            del oauth_states[state]
+            raise HTTPException(status_code=400, detail="State token expired")
+
+        # Verify user_id matches
+        if stored_state["user_id"] != str(user.id):
+            raise HTTPException(status_code=403, detail="State token mismatch")
+
+        # Delete state after successful validation
+        del oauth_states[state]
+
         tokens = await calendar_service.exchange_code_for_tokens(code)
 
         # Get user's calendars

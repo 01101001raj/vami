@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AuthResponse, User, Agent, Conversation, Usage } from '../types';
+import type { AuthResponse, User, Agent, Conversation, Usage, AgentUpdateData, DashboardStats } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -48,7 +48,7 @@ export const authAPI = {
 export const agentAPI = {
   getAgent: () => api.get<Agent>('/agents'),
 
-  updateAgent: (agentId: string, data: any) =>
+  updateAgent: (agentId: string, data: AgentUpdateData) =>
     api.put<Agent>(`/agents/${agentId}`, data),
 };
 
@@ -61,7 +61,7 @@ export const analyticsAPI = {
     api.get<Conversation>(`/analytics/conversations/${id}`),
 
   getStats: (days = 7) =>
-    api.get('/analytics/stats', { params: { days } }),
+    api.get<DashboardStats>('/analytics/stats', { params: { days } }),
 };
 
 // Billing API
