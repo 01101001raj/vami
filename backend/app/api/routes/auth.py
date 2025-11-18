@@ -240,19 +240,29 @@ async def reset_password(http_request: Request, access_token: str, new_password:
             )
 
         # Update password using the validated token
-        # Must set session first before updating user
-        try:
-            # Create a temporary admin client to update the password
-            # This is the correct way to handle password reset with Supabase
-            supabase.auth.admin.update_user_by_id(
-                user_response.user.id,
-                {"password": new_password}
+        # Use the access token to establish an authenticated session, then update password
+        from supabase import create_client
+
+        # Create a new client instance with the user's access token
+        authenticated_supabase = create_client(
+            settings.SUPABASE_URL,
+            settings.SUPABASE_KEY
+        )
+
+        # Set the session using the access token from the reset email
+        # This establishes a valid authenticated session for the user
+        authenticated_supabase.auth.set_session(access_token, access_token)
+
+        # Now update the password with the authenticated session
+        update_response = authenticated_supabase.auth.update_user({
+            "password": new_password
+        })
+
+        if not update_response.user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to update password"
             )
-        except AttributeError:
-            # Fallback: Use regular API (requires valid session)
-            # Set session with the reset token
-            supabase.postgrest.auth(access_token)
-            supabase.auth.update_user({"password": new_password})
 
         return {"message": "Password reset successfully"}
     except HTTPException:
