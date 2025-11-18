@@ -182,8 +182,8 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => {
-                // TODO: Implement Google OAuth
-                console.log('Google Sign-In clicked');
+                // TODO: Implement Google OAuth integration
+                alert('Google OAuth integration coming soon');
               }}
               className="btn btn-secondary w-full group"
               aria-label="Continue with Google"

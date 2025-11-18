@@ -59,12 +59,6 @@ const PaymentPage: React.FC = () => {
     }
   };
 
-  const handleSkip = () => {
-    // TODO: Remove this in production
-    // For testing, allow skipping directly to onboarding
-    navigate('/onboarding');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-teal-50/30">
       {/* Header */}
@@ -216,19 +210,6 @@ const PaymentPage: React.FC = () => {
                   <div className="text-xs">PCI Compliant</div>
                 </div>
               </div>
-            </div>
-
-            {/* Skip Button - FOR TESTING ONLY */}
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleSkip}
-                className="text-slate-500 hover:text-slate-700 underline text-sm"
-              >
-                Skip payment (Testing Mode)
-              </button>
-              <p className="text-xs text-slate-400 mt-1">
-                ⚠️ This button will be removed in production
-              </p>
             </div>
           </div>
         </div>

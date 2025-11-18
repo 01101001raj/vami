@@ -86,7 +86,7 @@ const OnboardingPage: React.FC = () => {
       } catch (createError: any) {
         // If agent already exists (400 error), get existing agent and update it
         if (createError.response?.status === 400 && createError.response?.data?.detail?.includes('already has an agent')) {
-          console.log('Agent already exists, updating instead...');
+          // Agent already exists, update instead
 
           // Get existing agent
           const existingAgentResponse = await api.get('/agents/');

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
+from app.logging_config import logger
 from app.api.routes import (
     auth, agents, analytics, billing, webhooks, integrations,
     team, calls, calendar, agent_actions, phone_numbers, templates

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Query
 from typing import List, Optional
 from datetime import datetime, date, timedelta
+import logging
 from app.schemas.calls import (
     CreateCallRequest, CallResponse, CallListResponse, CallDetailResponse,
     EndCallRequest, CallFeedbackRequest, CallStatsResponse,
@@ -13,6 +14,8 @@ from app.database import get_supabase
 from app.services.supabase_service import supabase_service
 from app.services.elevenlabs_service import elevenlabs_service
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/calls", tags=["Calls Management"])
 
@@ -310,7 +313,7 @@ async def end_call(
                 await elevenlabs_service.end_call(call["external_call_id"])
             except Exception as e:
                 # Log but don't fail
-                print(f"Failed to end external call: {e}")
+                logger.warning(f"Failed to end external call: {e}")
 
         # Calculate duration
         duration_secs = None

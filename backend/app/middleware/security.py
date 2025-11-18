@@ -274,7 +274,9 @@ class PerformanceMonitoringMiddleware(BaseHTTPMiddleware):
 
         # Log slow requests
         if process_time > self.slow_request_threshold:
-            print(f"Slow request: {request.method} {request.url.path} took {process_time:.2f}s")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Slow request: {request.method} {request.url.path} took {process_time:.2f}s")
 
         return response
 

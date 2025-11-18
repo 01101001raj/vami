@@ -3,6 +3,9 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 from typing import Optional
 from app.config import settings
 import html
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class EmailService:
@@ -176,7 +179,7 @@ class EmailService:
             response = self.client.send(message)
             return response.status_code == 202
         except Exception as e:
-            print(f"Failed to send email: {str(e)}")
+            logger.error(f"Failed to send email: {str(e)}")
             return False
 
 

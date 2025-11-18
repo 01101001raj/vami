@@ -1,5 +1,8 @@
 from twilio.rest import Client
 from app.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SMSService:
@@ -49,7 +52,7 @@ class SMSService:
             )
             return message.sid
         except Exception as e:
-            print(f"Failed to send SMS: {str(e)}")
+            logger.error(f"Failed to send SMS: {str(e)}")
             return None
 
 

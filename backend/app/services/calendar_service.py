@@ -5,6 +5,9 @@ from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 from app.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class CalendarService:
@@ -212,7 +215,8 @@ class CalendarService:
                 sendUpdates='all'
             ).execute()
             return True
-        except Exception:
+        except Exception as e:
+            logger.error(f"Failed to delete calendar event: {e}")
             return False
 
 

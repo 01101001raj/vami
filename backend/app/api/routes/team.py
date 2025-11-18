@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List
 from datetime import datetime, timedelta
 import secrets
+import logging
 from app.schemas.team import (
     TeamMemberResponse, InviteTeamMemberRequest, UpdateRoleRequest,
     TeamInvitationResponse, AcceptInvitationRequest, TeamStatsResponse,
@@ -13,6 +14,8 @@ from app.database import get_supabase
 from app.services.supabase_service import supabase_service
 from app.services.email_service import email_service
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/team", tags=["Team Management"])
 
@@ -192,7 +195,7 @@ async def invite_team_member(
             )
         except Exception as email_error:
             # Log email error but don't fail the invitation
-            print(f"Failed to send invitation email: {email_error}")
+            logger.warning(f"Failed to send invitation email: {email_error}")
 
         return TeamInvitationResponse(
             id=invitation["id"],

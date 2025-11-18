@@ -77,7 +77,7 @@ export default function AnalyticsPage() {
           <p className="text-body text-slate-600">Detailed insights into your call performance</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="btn btn-secondary" onClick={() => console.log('Filter clicked - functionality coming soon')}>
+          <button className="btn btn-secondary" onClick={() => alert('Filter functionality coming soon')}>
             <Filter className="w-4 h-4" />
             Filter
           </button>

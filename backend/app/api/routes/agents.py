@@ -3,6 +3,7 @@ from typing import List, Optional
 from datetime import datetime
 import os
 import uuid
+import logging
 from app.schemas.agent import AgentCreate, AgentUpdate, AgentResponse
 from app.services.elevenlabs_service import elevenlabs_service
 from app.services.supabase_service import supabase_service
@@ -13,6 +14,8 @@ from app.database import get_supabase
 from app.config import settings
 from app.templates_config.agent_templates import customize_template
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/agents", tags=["Agents"])
 
@@ -140,7 +143,7 @@ async def create_agent(
                 agent_dict["phone_number_status"] = "active"
             except Exception as phone_error:
                 # Log error but don't fail agent creation
-                print(f"Warning: Failed to provision phone number: {phone_error}")
+                logger.warning(f"Failed to provision phone number: {phone_error}")
                 agent_dict["phone_number"] = None
                 agent_dict["phone_number_status"] = "pending"
 
@@ -367,8 +370,10 @@ async def upload_knowledge_base_file(
             # Cleanup uploaded file
             try:
                 supabase.storage.from_("knowledge-base").remove([unique_filename])
-            except:
-                pass
+            except Exception as e:
+                # Log but don't fail if cleanup fails
+                import logging
+                logging.error(f"Failed to cleanup file from storage: {e}")
 
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -481,7 +486,7 @@ async def delete_knowledge_base_file(
             supabase.storage.from_("knowledge-base").remove([file_record["storage_path"]])
         except Exception as storage_error:
             # Log but don't fail
-            print(f"Failed to delete file from storage: {storage_error}")
+            logger.error(f"Failed to delete file from storage: {storage_error}")
 
         # Delete from database
         supabase.table("knowledge_base_files").delete().eq("id", file_id).execute()

@@ -1,13 +1,16 @@
 from typing import Optional, Dict, Any
 from app.config import settings
 import secrets
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     from elevenlabs.client import ElevenLabs
     ELEVENLABS_AVAILABLE = True
 except ImportError:
     ELEVENLABS_AVAILABLE = False
-    print("Warning: ElevenLabs SDK not installed. Install with: pip install elevenlabs")
+    logger.warning("ElevenLabs SDK not installed. Install with: pip install elevenlabs")
 
 
 class ElevenLabsService:
@@ -20,14 +23,14 @@ class ElevenLabsService:
                 self.client = ElevenLabs(api_key=self.api_key)
                 self.use_mock = False
             except Exception as e:
-                print(f"Warning: Failed to initialize ElevenLabs client: {e}")
+                logger.warning(f"Failed to initialize ElevenLabs client: {e}")
                 self.client = None
                 self.use_mock = True
         else:
             self.client = None
             self.use_mock = True
             if not ELEVENLABS_AVAILABLE:
-                print("Using mock ElevenLabs service - install elevenlabs package for real integration")
+                logger.info("Using mock ElevenLabs service - install elevenlabs package for real integration")
 
     async def create_agent(
         self,
@@ -89,7 +92,7 @@ class ElevenLabsService:
                         }
                     }
                 except Exception as api_error:
-                    print(f"ElevenLabs API error: {api_error}")
+                    logger.error(f"ElevenLabs API error: {api_error}")
                     # Fall back to mock if API fails
                     pass
 
@@ -133,7 +136,7 @@ class ElevenLabsService:
                     )
                     return {"agent_id": agent_id, "status": "updated"}
                 except Exception as api_error:
-                    print(f"ElevenLabs API error: {api_error}")
+                    logger.error(f"ElevenLabs API error: {api_error}")
                     pass
 
             # Mock response
@@ -158,7 +161,7 @@ class ElevenLabsService:
                     self.client.conversational_ai.agents.delete(agent_id=agent_id)
                     return True
                 except Exception as api_error:
-                    print(f"ElevenLabs API error: {api_error}")
+                    logger.error(f"ElevenLabs API error: {api_error}")
                     pass
 
             # Mock response
