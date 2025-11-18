@@ -29,10 +29,13 @@ class ConversationResponse(BaseModel):
 
 
 class AnalyticsStats(BaseModel):
-    total_conversations: int
+    total_calls: int  # Renamed from total_conversations for frontend compatibility
     total_minutes: float
     successful_calls: int
-    failed_calls: int
-    average_duration: float
-    appointments_booked: int
-    sentiment_breakdown: dict
+    success_rate: float  # Added for frontend compatibility (percentage 0-100)
+    avg_duration_secs: float  # Renamed from average_duration for frontend compatibility
+
+    # Keep these for backward compatibility if needed
+    failed_calls: Optional[int] = 0
+    appointments_booked: Optional[int] = 0
+    sentiment_breakdown: Optional[dict] = {}

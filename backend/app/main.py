@@ -1,17 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.api.routes import (
     auth, agents, analytics, billing, webhooks, integrations,
-    team, calls, calendar, settings as settings_routes, agent_actions, phone_numbers, templates
+    team, calls, calendar, agent_actions, phone_numbers, templates
 )
-from app.middleware.security import (
-    RateLimitMiddleware,
-    RequestValidationMiddleware,
-    RequestIDMiddleware,
-    SecurityHeadersMiddleware,
-    PerformanceMonitoringMiddleware
-)
+from app.api.routes import settings as settings_routes
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
+# Create rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,26 +23,36 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Add security middleware (order matters - they are executed in reverse order of addition)
-app.add_middleware(PerformanceMonitoringMiddleware, slow_request_threshold=2.0)
-app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(RequestIDMiddleware)
-app.add_middleware(RequestValidationMiddleware, max_request_size=10 * 1024 * 1024)  # 10MB
-app.add_middleware(
-    RateLimitMiddleware,
-    requests_per_minute=60,
-    requests_per_hour=1000,
-    enabled=not settings.DEBUG  # Disable rate limiting in debug mode
-)
+# Add rate limiter to app state
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# CORS middleware (must be added last to be executed first)
+# Security headers middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    # CSP that allows external integrations (Stripe, Google OAuth, SendGrid)
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "connect-src 'self' https://api.stripe.com https://accounts.google.com https://oauth2.googleapis.com; "
+        "frame-src https://checkout.stripe.com https://js.stripe.com https://accounts.google.com; "
+        "script-src 'self' 'unsafe-inline' https://js.stripe.com; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:;"
+    )
+    return response
+
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["X-Request-ID", "X-Process-Time", "X-RateLimit-Remaining-Minute"]
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],  # Explicit methods instead of wildcard
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],  # Explicit headers
 )
 
 # Include routers

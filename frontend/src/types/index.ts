@@ -39,16 +39,16 @@ export interface UserFeatures {
   white_labeling: boolean;
 }
 
-export interface AuthResponse {
-  access_token: string;
-  token_type?: string;
-  user: User;
-  checkout_url?: string;
+export interface ElevenLabsMetadata {
+  name: string;
+  prompt: string;
+  voice?: {
+    voice_id: string;
+  };
+  language?: string;
+  conversation_config?: Record<string, unknown>;
+  [key: string]: unknown;
 }
-
-// ============================================================
-// AGENT TYPES
-// ============================================================
 
 export interface Agent {
   id: number;
@@ -56,8 +56,7 @@ export interface Agent {
   agent_id: string;
   agent_name: string;
   status: string;
-  api_token?: string;
-  elevenlabs_metadata?: any;
+  elevenlabs_metadata?: ElevenLabsMetadata;
   created_at: string;
   updated_at: string;
 }
@@ -265,4 +264,18 @@ export interface Webhook {
   last_triggered_at?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface AgentUpdateData {
+  agent_name?: string;
+  status?: string;
+  elevenlabs_metadata?: Partial<ElevenLabsMetadata>;
+}
+
+export interface DashboardStats {
+  total_calls: number;
+  total_minutes: number;
+  successful_calls: number;
+  success_rate: number;
+  avg_duration_secs: number;
 }

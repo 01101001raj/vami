@@ -3,10 +3,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authAPI } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import { AxiosError } from 'axios';
 
 interface LoginForm {
   email: string;
   password: string;
+}
+
+interface ApiError {
+  detail: string;
 }
 
 export default function LoginPage() {
@@ -23,8 +28,9 @@ export default function LoginPage() {
       localStorage.setItem('access_token', response.data.access_token);
       setUser(response.data.user);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.');
+    } catch (err) {
+      const axiosError = err as AxiosError<ApiError>;
+      setError(axiosError.response?.data?.detail || 'Login failed. Please try again.');
     }
   };
 

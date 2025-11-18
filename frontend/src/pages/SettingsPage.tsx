@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { integrationsAPI } from '../services/api';
 import { Calendar, CheckCircle, ExternalLink, User, Building, Mail, Lock, Bell, Globe, Zap, Shield } from 'lucide-react';
@@ -6,11 +6,41 @@ import { Calendar, CheckCircle, ExternalLink, User, Building, Mail, Lock, Bell, 
 export default function SettingsPage() {
   const { user } = useAuthStore();
   const [connecting, setConnecting] = useState(false);
+  const [callbackStatus, setCallbackStatus] = useState<'success' | 'error' | ''>('');
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const state = params.get('state');
+
+      if (code && state) {
+        setConnecting(true);
+        try {
+          await integrationsAPI.handleGoogleCallback(code, state);
+          setCallbackStatus('success');
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (error) {
+          console.error('Failed to connect calendar', error);
+          setCallbackStatus('error');
+        } finally {
+          setConnecting(false);
+        }
+      }
+    };
+
+    handleOAuthCallback();
+  }, []);
 
   const handleConnectGoogle = async () => {
     setConnecting(true);
+    setCallbackStatus('');
     try {
       const response = await integrationsAPI.getGoogleAuthUrl();
+      // Store state in sessionStorage for verification (optional extra security)
+      sessionStorage.setItem('oauth_state', response.data.state);
       window.location.href = response.data.auth_url;
     } catch (error) {
       console.error('Failed to get Google auth URL', error);
@@ -125,14 +155,43 @@ export default function SettingsPage() {
               </button>
             </div>
 
-            {/* Feature availability notice */}
-            {user?.features.calendar_booking && (
-              <div className="p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
+            {/* Callback Status Messages */}
+            {callbackStatus === 'success' && (
+              <div className="p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-bold text-green-900 text-base">Calendar Integration Available</p>
+                    <p className="font-bold text-green-900 text-base">Calendar Connected Successfully!</p>
                     <p className="text-sm text-green-700 mt-1.5">
+                      Your Google Calendar is now connected. Appointments will be automatically synced.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {callbackStatus === 'error' && (
+              <div className="p-5 bg-gradient-to-r from-red-50 to-rose-50 rounded-xl border border-red-200">
+                <div className="flex items-start space-x-3">
+                  <Shield className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-bold text-red-900 text-base">Connection Failed</p>
+                    <p className="text-sm text-red-700 mt-1.5">
+                      Failed to connect your calendar. Please try again or contact support if the issue persists.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Feature availability notice */}
+            {user?.features.calendar_booking && !callbackStatus && (
+              <div className="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-bold text-blue-900 text-base">Calendar Integration Available</p>
+                    <p className="text-sm text-blue-700 mt-1.5">
                       Your plan includes automatic appointment booking. Connect your Google Calendar to enable this feature and start scheduling appointments automatically.
                     </p>
                   </div>

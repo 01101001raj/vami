@@ -249,6 +249,48 @@ class SupabaseService:
         updates["updated_at"] = datetime.utcnow().isoformat()
         self.db.table("calendar_connections").update(updates).eq("id", connection_id).execute()
 
+    async def get_analytics_stats(self, agent_id: str, days: int = 7) -> Dict[str, Any]:
+        """Get analytics statistics for an agent"""
+        from datetime import timedelta
+
+        # Calculate date range
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=days)
+
+        # Get all conversations in the period
+        result = (
+            self.db.table("conversations")
+            .select("*")
+            .eq("agent_id", agent_id)
+            .gte("created_at", start_date.isoformat())
+            .lte("created_at", end_date.isoformat())
+            .execute()
+        )
+
+        conversations = result.data
+        total_calls = len(conversations)
+        successful_calls = sum(1 for c in conversations if c.get('call_successful') == 'success')
+        total_duration_secs = sum(c.get('duration_secs', 0) or 0 for c in conversations)
+        total_minutes = total_duration_secs / 60.0 if total_duration_secs > 0 else 0
+        avg_duration_secs = total_duration_secs / total_calls if total_calls > 0 else 0
+
+        # Count sentiment breakdown
+        sentiment_breakdown = {}
+        for c in conversations:
+            sentiment = c.get('sentiment')
+            if sentiment:
+                sentiment_breakdown[sentiment] = sentiment_breakdown.get(sentiment, 0) + 1
+
+        return {
+            'total_calls': total_calls,
+            'successful_calls': successful_calls,
+            'failed_calls': total_calls - successful_calls,
+            'total_minutes': total_minutes,
+            'avg_duration_secs': avg_duration_secs,
+            'appointments_booked': 0,  # Would need to parse conversation data
+            'sentiment_breakdown': sentiment_breakdown
+        }
+
 
 # Singleton instance
 supabase_service = SupabaseService()

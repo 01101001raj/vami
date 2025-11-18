@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Phone, Clock, TrendingUp, Calendar, Upload, BarChart3, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Phone, Clock, TrendingUp, Calendar } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { billingAPI, agentAPI, analyticsAPI } from '../services/api';
-import type { Usage, Agent } from '../types';
+import type { Usage, Agent, DashboardStats } from '../types';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
-  const navigate = useNavigate();
   const [usage, setUsage] = useState<Usage | null>(null);
   const [agent, setAgent] = useState<Agent | null>(null);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,7 +109,7 @@ export default function DashboardPage() {
                 <Phone className="w-6 h-6" />
               </div>
             </div>
-            <p className="text-5xl font-bold mb-3 tracking-tight">{stats?.total_conversations || 0}</p>
+            <p className="text-5xl font-bold mb-3 tracking-tight">{stats?.total_calls || 0}</p>
             <div className="flex items-center gap-2 text-sm opacity-95 font-medium">
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
                 <TrendingUp className="w-4 h-4" />
@@ -156,7 +155,7 @@ export default function DashboardPage() {
           </div>
           <p className="metric-label mb-2">Success Rate</p>
           <p className="metric-value">
-            {stats ? Math.round((stats.successful_calls / (stats.total_conversations || 1)) * 100) : 0}%
+            {stats ? Math.round((stats.successful_calls / (stats.total_calls || 1)) * 100) : 0}%
           </p>
           <p className="text-xs text-slate-500 mt-2.5 font-semibold">
             {stats?.successful_calls || 0} successful calls
@@ -275,45 +274,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent Activity */}
+      {/* Quick Actions */}
       <div className="card">
-        <h2 className="text-h2 text-slate-900 mb-6">Recent Activity</h2>
-        <div className="space-y-4">
-          <div className="flex items-start space-x-4 p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-              <Phone className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-body-sm font-semibold text-slate-900">Successful call completed</p>
-              <p className="text-body-sm text-slate-600">Appointment booked with John Doe</p>
-              <p className="text-caption text-slate-500 mt-1">2 hours ago</p>
-            </div>
-            <span className="badge badge-success">Success</span>
-          </div>
-
-          <div className="flex items-start space-x-4 p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-body-sm font-semibold text-slate-900">Calendar sync completed</p>
-              <p className="text-body-sm text-slate-600">3 appointments synchronized</p>
-              <p className="text-caption text-slate-500 mt-1">5 hours ago</p>
-            </div>
-            <span className="badge badge-info">Sync</span>
-          </div>
-
-          <div className="flex items-start space-x-4 p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-body-sm font-semibold text-slate-900">Usage milestone reached</p>
-              <p className="text-body-sm text-slate-600">You've completed 100 calls this month</p>
-              <p className="text-caption text-slate-500 mt-1">1 day ago</p>
-            </div>
-            <span className="badge badge-warning">Milestone</span>
-          </div>
+        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link to="/settings" className="btn btn-secondary text-center">
+            Configure Agent Settings
+          </Link>
+          <Link to="/analytics" className="btn btn-secondary text-center">
+            View Analytics
+          </Link>
         </div>
       </div>
     </div>

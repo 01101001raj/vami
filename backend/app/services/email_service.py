@@ -2,6 +2,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Email, To, Content
 from typing import Optional
 from app.config import settings
+import html
 
 
 class EmailService:
@@ -9,8 +10,16 @@ class EmailService:
         self.client = SendGridAPIClient(settings.SENDGRID_API_KEY)
         self.from_email = Email(settings.SENDGRID_FROM_EMAIL, settings.SENDGRID_FROM_NAME)
 
+    def _sanitize(self, text: str) -> str:
+        """Sanitize user input for HTML email templates"""
+        if not text:
+            return ""
+        return html.escape(str(text))
+
     async def send_welcome_email(self, to_email: str, company_name: str, agent_id: str):
         """Send welcome email to new user"""
+        company_name = self._sanitize(company_name)
+        agent_id = self._sanitize(agent_id)
         subject = f"Welcome to {settings.APP_NAME}!"
 
         html_content = f"""
@@ -53,6 +62,10 @@ class EmailService:
         business_name: str
     ):
         """Send appointment confirmation email"""
+        patient_name = self._sanitize(patient_name)
+        appointment_date = self._sanitize(appointment_date)
+        appointment_time = self._sanitize(appointment_time)
+        business_name = self._sanitize(business_name)
         subject = f"Appointment Confirmation - {business_name}"
 
         html_content = f"""
@@ -89,6 +102,7 @@ class EmailService:
         percentage: float
     ):
         """Send usage alert when approaching limit"""
+        company_name = self._sanitize(company_name)
         subject = f"Usage Alert: {percentage:.0f}% of Monthly Minutes Used"
 
         html_content = f"""
@@ -121,6 +135,7 @@ class EmailService:
 
     async def send_payment_failed_email(self, to_email: str, company_name: str):
         """Send payment failed notification"""
+        company_name = self._sanitize(company_name)
         subject = "Payment Failed - Action Required"
 
         html_content = f"""

@@ -23,9 +23,10 @@ import WelcomePage from './pages/WelcomePage';
 import PricingPage from './pages/PricingPage';
 import PaymentPage from './pages/PaymentPage';
 
-// Layout
+// Components
 import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const { setUser, setLoading } = useAuthStore();
@@ -51,7 +52,8 @@ function App() {
   }, [setUser, setLoading]);
 
   return (
-    <BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -119,7 +121,8 @@ function App() {
           <Route path="help" element={<HelpPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

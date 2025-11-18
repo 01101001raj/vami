@@ -187,9 +187,23 @@ class ElevenLabsService:
             raise Exception(f"Failed to get conversation: {str(e)}")
 
     def verify_webhook_signature(self, payload: bytes, signature: str, timestamp: str) -> bool:
-        """Verify ElevenLabs webhook signature using HMAC"""
+        """Verify ElevenLabs webhook signature using HMAC and check timestamp"""
         import hmac
         import hashlib
+        from datetime import datetime, timedelta
+
+        # Verify timestamp is recent (within 5 minutes) to prevent replay attacks
+        try:
+            webhook_time = datetime.fromtimestamp(int(timestamp))
+            current_time = datetime.utcnow()
+            time_diff = abs((current_time - webhook_time).total_seconds())
+
+            # Reject if timestamp is more than 5 minutes old
+            if time_diff > 300:  # 5 minutes
+                return False
+        except (ValueError, TypeError):
+            # Invalid timestamp format
+            return False
 
         # Create the signed payload string
         signed_payload = f"{timestamp}.{payload.decode('utf-8')}"
@@ -201,7 +215,7 @@ class ElevenLabsService:
             hashlib.sha256
         ).hexdigest()
 
-        # Compare signatures
+        # Compare signatures using constant-time comparison
         return hmac.compare_digest(expected_signature, signature)
 
 

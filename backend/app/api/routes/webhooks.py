@@ -5,11 +5,16 @@ from app.services.supabase_service import supabase_service
 from app.services.email_service import email_service
 from app.models.user import SubscriptionPlan
 from datetime import datetime
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/webhooks", tags=["Webhooks"])
 
 
 @router.post("/stripe")
+@limiter.limit("100/minute")  # Allow burst of webhook events
 async def stripe_webhook(request: Request, stripe_signature: str = Header(None)):
     """Handle Stripe webhooks"""
     try:
@@ -77,11 +82,26 @@ async def stripe_webhook(request: Request, stripe_signature: str = Header(None))
 
 
 @router.post("/elevenlabs")
-async def elevenlabs_webhook(request: Request):
+@limiter.limit("100/minute")  # Allow burst of webhook events
+async def elevenlabs_webhook(
+    request: Request,
+    xi_signature: str = Header(None, alias="xi-signature"),
+    xi_timestamp: str = Header(None, alias="xi-timestamp")
+):
     """Handle ElevenLabs post-call webhooks"""
     try:
         payload = await request.body()
-        data = await request.json()
+
+        # Verify webhook signature
+        if not xi_signature or not xi_timestamp:
+            raise HTTPException(status_code=401, detail="Missing webhook signature headers")
+
+        if not elevenlabs_service.verify_webhook_signature(payload, xi_signature, xi_timestamp):
+            raise HTTPException(status_code=401, detail="Invalid webhook signature")
+
+        # Parse JSON from payload
+        import json
+        data = json.loads(payload.decode('utf-8'))
 
         # Store conversation
         conversation_data = {

@@ -1,9 +1,5 @@
 import axios from 'axios';
-import type {
-  AuthResponse, User, Agent, AgentToken, Conversation, Usage, KnowledgeBaseFile,
-  TeamMember, TeamInvitation, CalendarIntegration, Appointment, AvailabilitySlot,
-  Call, NotificationPreferences, APIKey, Webhook, AnalyticsStats
-} from '../types';
+import type { AuthResponse, User, Agent, Conversation, Usage, AgentUpdateData, DashboardStats } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -54,7 +50,7 @@ export const authAPI = {
     api.post('/auth/forgot-password', null, { params: { email } }),
 
   resetPassword: (data: { token: string; password: string }) =>
-    api.post('/auth/reset-password', data),
+    api.post('/auth/reset-password', { access_token: data.token, new_password: data.password }),
 };
 
 // ============================================================
@@ -66,7 +62,7 @@ export const agentAPI = {
 
   getAgent: () => api.get<Agent>('/agents'),
 
-  updateAgent: (agentId: string, data: any) =>
+  updateAgent: (agentId: string, data: AgentUpdateData) =>
     api.put<Agent>(`/agents/${agentId}`, data),
 
   getApiToken: (agentId: string) =>
@@ -112,16 +108,7 @@ export const analyticsAPI = {
     api.get<Conversation>(`/analytics/conversations/${id}`),
 
   getStats: (days = 7) =>
-    api.get<AnalyticsStats>('/analytics/stats', { params: { days } }),
-
-  exportConversations: (params?: { start_date?: string; end_date?: string }) =>
-    api.get('/analytics/export', { params, responseType: 'blob' }),
-
-  getSentimentTrends: (days = 30) =>
-    api.get('/analytics/sentiment-trends', { params: { days } }),
-
-  getIntentBreakdown: (days = 30) =>
-    api.get('/analytics/intent-breakdown', { params: { days } }),
+    api.get<DashboardStats>('/analytics/stats', { params: { days } }),
 };
 
 // ============================================================
@@ -292,8 +279,8 @@ export const settingsAPI = {
 export const integrationsAPI = {
   getGoogleAuthUrl: () => api.get<{ auth_url: string; state: string }>('/integrations/google/auth-url'),
 
-  handleGoogleCallback: (code: string) =>
-    api.post('/integrations/google/callback', { code }),
+  handleGoogleCallback: (code: string, state: string) =>
+    api.post('/integrations/google/callback', { code, state }),
 
   listCalendars: () => api.get('/integrations/google/calendars'),
 
