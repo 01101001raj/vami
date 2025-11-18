@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
+import { useAuthStore } from '../store/authStore';
 import { AxiosError } from 'axios';
 
 interface RegisterForm {
@@ -17,6 +18,7 @@ interface ApiError {
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { setUser } = useAuthStore();
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
@@ -31,6 +33,18 @@ export default function RegisterPage() {
       // Save access token and user data
       if (response.data.access_token) {
         localStorage.setItem('access_token', response.data.access_token);
+      }
+
+      // Set user in store
+      setUser(response.data.user);
+
+      // Redirect based on response
+      if (response.data.checkout_url) {
+        // If Stripe checkout URL is provided, redirect to Stripe
+        window.location.href = response.data.checkout_url;
+      } else {
+        // Otherwise, redirect to onboarding
+        navigate('/onboarding');
       }
     } catch (err) {
       const axiosError = err as AxiosError<ApiError>;

@@ -109,7 +109,7 @@ export default function DashboardPage() {
                 <Phone className="w-6 h-6" />
               </div>
             </div>
-            <p className="text-5xl font-bold mb-3 tracking-tight">{stats?.total_conversations || 0}</p>
+            <p className="text-5xl font-bold mb-3 tracking-tight">{stats?.total_calls || 0}</p>
             <div className="flex items-center gap-2 text-sm opacity-95 font-medium">
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full">
                 <TrendingUp className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function DashboardPage() {
           </div>
           <p className="metric-label mb-2">Success Rate</p>
           <p className="metric-value">
-            {stats ? Math.round((stats.successful_calls / (stats.total_conversations || 1)) * 100) : 0}%
+            {stats ? Math.round((stats.successful_calls / (stats.total_calls || 1)) * 100) : 0}%
           </p>
           <p className="text-xs text-slate-500 mt-2.5 font-semibold">
             {stats?.successful_calls || 0} successful calls
