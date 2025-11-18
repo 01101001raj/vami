@@ -25,7 +25,8 @@
       "Bash(nul)",
       "Bash(ping:*)",
       "Bash(find:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
