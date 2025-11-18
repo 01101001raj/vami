@@ -10,6 +10,8 @@ class CheckoutRequest(BaseModel):
     cancel_url: Optional[str] = None
 
 
+
+
 class SubscriptionResponse(BaseModel):
     id: int
     status: str

@@ -38,7 +38,7 @@ class TokenData(BaseModel):
 
 
 class AuthResponse(BaseModel):
-    access_token: str
+    access_token: Optional[str] = None
     token_type: str = "bearer"
     user: User
     checkout_url: Optional[str] = None  # For new registrations

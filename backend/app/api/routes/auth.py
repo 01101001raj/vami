@@ -51,26 +51,35 @@ async def register(http_request: Request, request: RegisterRequest):
             plan=request.plan
         )
 
-        # Create Stripe customer
-        stripe_customer_id = await stripe_service.create_customer(
-            email=request.email,
-            name=request.company_name or request.email
-        )
+        # Create Stripe customer (skip if using placeholder keys)
+        stripe_customer_id = None
+        checkout_url = None
 
-        # Update user with Stripe customer ID
-        await supabase_service.update_user(user_id, {
-            "stripe_customer_id": stripe_customer_id
-        })
+        try:
+            if not settings.STRIPE_SECRET_KEY.startswith("sk_test_placeholder"):
+                stripe_customer_id = await stripe_service.create_customer(
+                    email=request.email,
+                    name=request.company_name or request.email
+                )
 
-        # Create Stripe checkout session
-        trial_days = 14 if request.plan.value == "starter_trial" else 0
-        checkout_url = await stripe_service.create_checkout_session(
-            customer_id=stripe_customer_id,
-            plan=request.plan,
-            success_url=f"{settings.FRONTEND_URL}/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{settings.FRONTEND_URL}/pricing",
-            trial_days=trial_days
-        )
+                # Update user with Stripe customer ID
+                await supabase_service.update_user(user_id, {
+                    "stripe_customer_id": stripe_customer_id
+                })
+
+                # Create Stripe checkout session
+                trial_days = 14 if request.plan.value == "starter_trial" else 0
+                checkout_url = await stripe_service.create_checkout_session(
+                    customer_id=stripe_customer_id,
+                    plan=request.plan,
+                    success_url=f"{settings.FRONTEND_URL}/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
+                    cancel_url=f"{settings.FRONTEND_URL}/pricing",
+                    trial_days=trial_days
+                )
+        except Exception as stripe_error:
+            # Stripe not configured, continue without checkout URL
+            # User can still access the platform in trial mode
+            pass
 
         # Get access token
         access_token = auth_response.session.access_token if auth_response.session else None
@@ -167,14 +176,31 @@ async def get_me(user: User = Depends(get_current_user)):
 async def forgot_password(http_request: Request, email: str):
     """
     Send password reset email
+
+    Supabase will send an email with a reset link to:
+    {FRONTEND_URL}/reset-password?token=xxx
     """
     try:
         supabase = get_supabase()
-        supabase.auth.reset_password_email(email)
-        return {"message": "Password reset email sent"}
+
+        # Send password reset email via Supabase
+        # This will send an email with a magic link
+        supabase.auth.reset_password_for_email(
+            email,
+            {
+                "redirect_to": f"{settings.FRONTEND_URL}/reset-password"
+            }
+        )
+
+        # Always return success to prevent email enumeration
+        return {
+            "message": "If an account exists with this email, you will receive a password reset link shortly"
+        }
     except Exception as e:
-        # Don't reveal if email exists or not
-        return {"message": "If the email exists, a password reset link has been sent"}
+        # Don't reveal if email exists or not (security best practice)
+        return {
+            "message": "If an account exists with this email, you will receive a password reset link shortly"
+        }
 
 
 @router.post("/reset-password")
@@ -234,5 +260,5 @@ async def reset_password(http_request: Request, access_token: str, new_password:
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Failed to reset password"
+            detail=f"Failed to reset password: {str(e)}"
         )

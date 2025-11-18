@@ -23,7 +23,7 @@ export default function PaymentSuccessPage() {
 
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h1>
           <p className="text-gray-600 mb-6">
-            Your AI voice agent is being set up. You'll be redirected to the dashboard in a few seconds.
+            Welcome to Vami! You'll be redirected to your dashboard in a few seconds.
           </p>
 
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>

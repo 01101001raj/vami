@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     MARKETING_SITE_URL: str = "https://vami.app"
     CORS_ORIGINS: str = '["http://localhost:5173"]'
     WEBHOOK_BASE_URL: str = "https://api.vami.app"
+    ELEVENLABS_WEBHOOK_URL: str = "https://api.elevenlabs.io/v1/convai/conversation/phone"
 
     @property
     def cors_origins_list(self) -> List[str]:

@@ -11,6 +11,7 @@ class AgentStatus(str, Enum):
     DELETED = "deleted"
 
 
+
 class Agent(BaseModel):
     id: int
     user_id: str

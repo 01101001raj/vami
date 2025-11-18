@@ -31,7 +31,10 @@ api.interceptors.response.use(
   }
 );
 
-// Auth API
+// ============================================================
+// AUTH API
+// ============================================================
+
 export const authAPI = {
   register: (data: { email: string; password: string; company_name?: string; plan: string }) =>
     api.post<AuthResponse>('/auth/register', data),
@@ -42,20 +45,64 @@ export const authAPI = {
   logout: () => api.post('/auth/logout'),
 
   getMe: () => api.get<User>('/auth/me'),
+
+  forgotPassword: (email: string) =>
+    api.post('/auth/forgot-password', null, { params: { email } }),
+
+  resetPassword: (data: { token: string; password: string }) =>
+    api.post('/auth/reset-password', data),
 };
 
-// Agent API
+// ============================================================
+// AGENT API
+// ============================================================
+
 export const agentAPI = {
+  createAgent: (data: any) => api.post<Agent>('/agents', data),
+
   getAgent: () => api.get<Agent>('/agents'),
 
   updateAgent: (agentId: string, data: AgentUpdateData) =>
     api.put<Agent>(`/agents/${agentId}`, data),
+
+  getApiToken: (agentId: string) =>
+    api.get<AgentToken>(`/agents/${agentId}/api-token`),
+
+  regenerateApiToken: (agentId: string) =>
+    api.post<AgentToken>(`/agents/${agentId}/regenerate-token`),
+
+  // Knowledge Base
+  uploadFile: (agentId: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post<KnowledgeBaseFile>(
+      `/agents/knowledge-base/upload`,
+      formData,
+      {
+        params: { agent_id: agentId },
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  },
+
+  listFiles: (agentId: string) =>
+    api.get<KnowledgeBaseFile[]>('/agents/knowledge-base/files', {
+      params: { agent_id: agentId },
+    }),
+
+  deleteFile: (fileId: string) =>
+    api.delete(`/agents/knowledge-base/files/${fileId}`),
 };
 
-// Analytics API
+// ============================================================
+// ANALYTICS API
+// ============================================================
+
 export const analyticsAPI = {
   getConversations: (page = 1, perPage = 20) =>
-    api.get<Conversation[]>('/analytics/conversations', { params: { page, per_page: perPage } }),
+    api.get<Conversation[]>('/analytics/conversations', {
+      params: { page, per_page: perPage },
+    }),
 
   getConversation: (id: string) =>
     api.get<Conversation>(`/analytics/conversations/${id}`),
@@ -64,7 +111,10 @@ export const analyticsAPI = {
     api.get<DashboardStats>('/analytics/stats', { params: { days } }),
 };
 
-// Billing API
+// ============================================================
+// BILLING API
+// ============================================================
+
 export const billingAPI = {
   createCheckout: (data: { plan: string; success_url?: string; cancel_url?: string }) =>
     api.post('/billing/create-checkout', data),
@@ -76,9 +126,156 @@ export const billingAPI = {
   getCustomerPortal: () => api.post<{ portal_url: string }>('/billing/portal'),
 
   getUsage: () => api.get<Usage>('/billing/usage'),
+
+  updatePlan: (plan: string) =>
+    api.post('/billing/update-plan', { plan }),
+
+  getInvoices: () => api.get('/billing/invoices'),
 };
 
-// Integrations API
+// ============================================================
+// TEAM API
+// ============================================================
+
+export const teamAPI = {
+  getMembers: () => api.get<TeamMember[]>('/team/members'),
+
+  inviteMember: (data: { email: string; role: 'admin' | 'editor' | 'viewer' }) =>
+    api.post<TeamInvitation>('/team/invite', data),
+
+  updateRole: (memberId: string, role: string) =>
+    api.put(`/team/members/${memberId}/role`, { role }),
+
+  removeMember: (memberId: string) =>
+    api.delete(`/team/members/${memberId}`),
+
+  getInvitations: () => api.get<TeamInvitation[]>('/team/invitations'),
+
+  cancelInvitation: (invitationId: string) =>
+    api.delete(`/team/invitations/${invitationId}`),
+
+  acceptInvitation: (token: string) =>
+    api.post('/team/accept-invitation', { invitation_token: token }),
+
+  getPermissions: () => api.get('/team/permissions'),
+
+  getStats: () => api.get('/team/stats'),
+};
+
+// ============================================================
+// CALENDAR API
+// ============================================================
+
+export const calendarAPI = {
+  getIntegrations: () => api.get<CalendarIntegration[]>('/calendar/integrations'),
+
+  getAuthUrl: (provider: 'google' | 'outlook' | 'apple') =>
+    api.get<{ auth_url: string; state: string }>(`/calendar/auth-url/${provider}`),
+
+  handleCallback: (provider: string, code: string, state: string) =>
+    api.post('/calendar/callback', { provider, code, state }),
+
+  disconnectCalendar: (integrationId: string) =>
+    api.delete(`/calendar/integrations/${integrationId}`),
+
+  listAppointments: (params?: { start_date?: string; end_date?: string; status?: string }) =>
+    api.get<Appointment[]>('/calendar/appointments', { params }),
+
+  getAppointment: (appointmentId: string) =>
+    api.get<Appointment>(`/calendar/appointments/${appointmentId}`),
+
+  createAppointment: (data: {
+    title: string;
+    description?: string;
+    start_time: string;
+    end_time: string;
+    attendee_email?: string;
+    attendee_name?: string;
+    attendee_phone?: string;
+  }) => api.post<Appointment>('/calendar/appointments', data),
+
+  updateAppointment: (appointmentId: string, data: any) =>
+    api.put<Appointment>(`/calendar/appointments/${appointmentId}`, data),
+
+  cancelAppointment: (appointmentId: string, reason?: string) =>
+    api.delete(`/calendar/appointments/${appointmentId}`, {
+      data: { reason },
+    }),
+
+  checkAvailability: (data: { date: string; duration_minutes: number }) =>
+    api.post<{ slots: AvailabilitySlot[] }>('/calendar/check-availability', data),
+
+  syncCalendar: (integrationId: string) =>
+    api.post(`/calendar/integrations/${integrationId}/sync`),
+
+  getSettings: () => api.get('/calendar/settings'),
+
+  updateSettings: (data: any) =>
+    api.put('/calendar/settings', data),
+};
+
+// ============================================================
+// CALLS API
+// ============================================================
+
+export const callsAPI = {
+  listCalls: (params?: { status?: string; direction?: string; page?: number; per_page?: number }) =>
+    api.get<Call[]>('/calls', { params }),
+
+  getCall: (callId: string) =>
+    api.get<Call>(`/calls/${callId}`),
+
+  initiateCall: (data: { phone_number: string; agent_id: string; scheduled_at?: string }) =>
+    api.post<Call>('/calls/initiate', data),
+
+  cancelCall: (callId: string) =>
+    api.delete(`/calls/${callId}`),
+
+  getStats: (days = 30) =>
+    api.get('/calls/stats', { params: { days } }),
+};
+
+// ============================================================
+// SETTINGS API
+// ============================================================
+
+export const settingsAPI = {
+  // Notifications
+  getNotificationPreferences: () =>
+    api.get<NotificationPreferences>('/settings/notifications'),
+
+  updateNotificationPreferences: (data: Partial<NotificationPreferences>) =>
+    api.put<NotificationPreferences>('/settings/notifications', data),
+
+  // API Keys
+  listApiKeys: () => api.get<APIKey[]>('/settings/api-keys'),
+
+  createApiKey: (data: { name: string; permissions: string[]; expires_at?: string }) =>
+    api.post<APIKey>('/settings/api-keys', data),
+
+  deleteApiKey: (keyId: string) =>
+    api.delete(`/settings/api-keys/${keyId}`),
+
+  // Webhooks
+  listWebhooks: () => api.get<Webhook[]>('/settings/webhooks'),
+
+  createWebhook: (data: { name: string; url: string; events: string[]; secret?: string }) =>
+    api.post<Webhook>('/settings/webhooks', data),
+
+  updateWebhook: (webhookId: string, data: any) =>
+    api.put<Webhook>(`/settings/webhooks/${webhookId}`, data),
+
+  deleteWebhook: (webhookId: string) =>
+    api.delete(`/settings/webhooks/${webhookId}`),
+
+  testWebhook: (webhookId: string) =>
+    api.post(`/settings/webhooks/${webhookId}/test`),
+};
+
+// ============================================================
+// INTEGRATIONS API (Legacy - kept for compatibility)
+// ============================================================
+
 export const integrationsAPI = {
   getGoogleAuthUrl: () => api.get<{ auth_url: string; state: string }>('/integrations/google/auth-url'),
 

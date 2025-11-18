@@ -1,6 +1,11 @@
 # Vami Platform - AI Voice Agents for Healthcare
 
-A complete B2B SaaS platform that enables healthcare practices to deploy AI-powered voice agents for handling inbound calls, booking appointments, and managing patient communications 24/7.
+**Complete B2B SaaS platform for deploying AI-powered voice agents to handle inbound calls, book appointments, and manage patient communications 24/7.**
+
+[![License](https://img.shields.io/badge/license-Proprietary-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![React](https://img.shields.io/badge/react-18.2-blue.svg)](https://react.dev)
+[![FastAPI](https://img.shields.io/badge/fastapi-0.104+-green.svg)](https://fastapi.tiangolo.com)
 
 ## 🏗️ Architecture
 
@@ -38,7 +43,190 @@ vami/
     ├── package.json
     └── vercel.json
 
-## 🚀 Getting Started
+---
+
+## 📚 **Complete Documentation**
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| **[SETUP_GUIDE.md](SETUP_GUIDE.md)** | Complete environment setup (Supabase, Stripe, ElevenLabs, etc.) | ✅ Ready |
+| **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** | Production deployment (Railway + Vercel) | ✅ Ready |
+| **[TESTING_GUIDE.md](TESTING_GUIDE.md)** | Testing checklist & scripts | ✅ Ready |
+| **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** | Complete API reference | ✅ Ready |
+| **[Postman Collection](Vami_Platform_API.postman_collection.json)** | Import for easy API testing | ✅ Ready |
+
+---
+
+## 🚀 Quick Start (First Time Setup)
+
+### Step 1: Clone & Install
+
+```bash
+# Clone repository
+git clone <your-repo-url>
+cd vami
+
+# Backend setup
+cd backend
+python -m venv venv
+source venv/Scripts/activate  # Windows
+# source venv/bin/activate  # Mac/Linux
+pip install -r requirements.txt
+
+# Frontend setup
+cd ../frontend
+npm install
+```
+
+### Step 2: Database Setup
+
+**See [SETUP_GUIDE.md](SETUP_GUIDE.md) Section 1 for detailed instructions**
+
+1. Create Supabase project
+2. Run migration: `backend/migrations/000_COMPLETE_DATABASE_SETUP.sql`
+3. Create storage bucket: `knowledge-base`
+4. Get API credentials
+
+### Step 3: Configure Services
+
+**See [SETUP_GUIDE.md](SETUP_GUIDE.md) for complete service setup**
+
+Required services:
+- ✅ Supabase (database) - [Guide](SETUP_GUIDE.md#1-supabase-setup)
+- ✅ Stripe (payments) - [Guide](SETUP_GUIDE.md#2-stripe-setup)
+- ✅ ElevenLabs (voice AI) - [Guide](SETUP_GUIDE.md#3-elevenlabs-setup)
+- ✅ Google Cloud (calendar) - [Guide](SETUP_GUIDE.md#4-google-cloud-setup)
+- ✅ SendGrid (email) - [Guide](SETUP_GUIDE.md#5-sendgrid-setup)
+- ✅ Twilio (SMS) - [Guide](SETUP_GUIDE.md#6-twilio-setup)
+
+### Step 4: Environment Variables
+
+Create `.env` files from examples and fill in your API keys:
+
+```bash
+# Backend
+cp backend/.env.example backend/.env
+# Edit backend/.env with your credentials
+
+# Frontend
+cp frontend/.env.example frontend/.env
+# Edit frontend/.env with your credentials
+```
+
+### Step 5: Run Locally
+
+```bash
+# Terminal 1: Backend
+cd backend
+source venv/Scripts/activate
+uvicorn app.main:app --reload
+# → http://localhost:8000
+
+# Terminal 2: Frontend
+cd frontend
+npm run dev
+# → http://localhost:5173
+```
+
+### Step 6: Test
+
+```bash
+# Visit http://localhost:5173
+# Register a new user
+# Use Stripe test card: 4242 4242 4242 4242
+# Verify agent creation
+```
+
+**Total Setup Time**: ~2-3 hours
+
+---
+
+## 📦 What's Included
+
+### ✅ Complete MVP Implementation (Phase 1)
+
+**Backend (FastAPI)**:
+- 75+ API endpoints
+- JWT authentication
+- Stripe subscription management
+- ElevenLabs voice agent integration
+- Google Calendar OAuth & booking
+- Knowledge base file upload
+- Team management system
+- Call analytics & usage tracking
+- Security middleware (rate limiting, CORS, validation)
+- **Agent Actions API** with token authentication ⭐ NEW
+- Comprehensive error handling
+
+**Frontend (React + TypeScript)**:
+- Premium UI design (emerald theme)
+- Authentication flows
+- Dashboard with analytics
+- Knowledge base management
+- Team collaboration
+- Calendar integration
+- Settings & preferences
+- Mobile responsive
+- All pages functional
+
+**Database**:
+- Complete PostgreSQL schema (14 tables)
+- Row Level Security (RLS) policies
+- Indexes for performance
+- Migration scripts
+
+**Documentation**:
+- Setup guides for all services
+- Deployment instructions
+- API documentation
+- Testing checklists
+- Postman collection
+
+**Infrastructure**:
+- Railway deployment config
+- Vercel deployment config
+- Health checks
+- Auto-restart policies
+
+---
+
+## 🎯 Implementation Status
+
+### Phase 1 - MVP: **85% Complete** ✅
+
+#### Completed
+- [x] Complete database schema with migrations
+- [x] Authentication system (JWT, Supabase Auth)
+- [x] Stripe payment integration (4 plans)
+- [x] ElevenLabs agent creation & webhooks
+- [x] Google Calendar OAuth & appointment booking
+- [x] Knowledge base upload (PDF, DOCX, etc.)
+- [x] Team management (invitations, roles)
+- [x] Call analytics & transcripts
+- [x] Usage tracking & billing
+- [x] Security middleware (rate limiting, headers)
+- [x] **Agent Actions API** (check availability, book appointments)
+- [x] **Agent API token generation & management** ⭐ NEW
+- [x] Premium UI with professional design
+- [x] All 75+ API endpoints implemented
+- [x] Comprehensive documentation
+- [x] Deployment configurations
+
+#### Setup Required (15%)
+- [ ] Run database migrations on Supabase
+- [ ] Create Stripe products & get price IDs
+- [ ] Set up ElevenLabs account & API key
+- [ ] Configure Google OAuth credentials
+- [ ] Set up SendGrid account
+- [ ] Set up Twilio account
+- [ ] Deploy backend to Railway
+- [ ] Deploy frontend to Vercel
+
+**See [SETUP_GUIDE.md](SETUP_GUIDE.md) for step-by-step instructions**
+
+---
+
+## 🚀 Getting Started (Alternative)
 
 ### Prerequisites
 

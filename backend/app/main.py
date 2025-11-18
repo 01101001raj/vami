@@ -12,9 +12,11 @@ limiter = Limiter(key_func=get_remote_address)
 # Create FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
-    version="1.0.0",
-    description="Vami Platform API - AI Voice Agents for Healthcare",
-    debug=settings.DEBUG
+    version="2.0.0",
+    description="Vami Platform API - AI Voice Agents with Team Collaboration, Calendar Integration & Advanced Features",
+    debug=settings.DEBUG,
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 # Add rate limiter to app state
@@ -57,19 +59,63 @@ app.include_router(billing.router, prefix="/api")
 app.include_router(webhooks.router, prefix="/api")
 app.include_router(integrations.router, prefix="/api")
 
+# New routers
+app.include_router(team.router, prefix="/api")
+app.include_router(calls.router, prefix="/api")
+app.include_router(calendar.router, prefix="/api")
+app.include_router(settings_routes.router, prefix="/api")
+app.include_router(agent_actions.router, prefix="/api")
+app.include_router(phone_numbers.router, prefix="/api")
+app.include_router(templates.router, prefix="/api")
+
 
 @app.get("/")
 async def root():
     return {
         "message": "Vami Platform API",
-        "version": "1.0.0",
-        "status": "operational"
+        "version": "2.0.0",
+        "status": "operational",
+        "features": [
+            "AI Voice Agents",
+            "Team Collaboration",
+            "Calendar Integration",
+            "Call Management",
+            "Analytics & Reporting",
+            "Knowledge Base",
+            "Webhook Support",
+            "Advanced Settings"
+        ],
+        "documentation": {
+            "swagger": "/docs",
+            "redoc": "/redoc"
+        }
     }
 
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy",
+        "version": "2.0.0",
+        "timestamp": "now"
+    }
+
+
+@app.get("/api/routes")
+async def list_routes():
+    """List all available API routes"""
+    routes = []
+    for route in app.routes:
+        if hasattr(route, "methods"):
+            routes.append({
+                "path": route.path,
+                "methods": list(route.methods),
+                "name": route.name
+            })
+    return {
+        "total": len(routes),
+        "routes": sorted(routes, key=lambda x: x["path"])
+    }
 
 
 if __name__ == "__main__":
