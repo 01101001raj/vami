@@ -32,9 +32,12 @@ This PR implements comprehensive security improvements, fixes critical user work
 ## 🐛 Critical Bug Fixes
 
 ### 1. Password Reset Flow
-- **Issue**: Frontend-backend parameter mismatch
+- **Issue**: Frontend-backend parameter mismatch + insecure fallback authentication
 - **Fixed**: Updated API to use `access_token` and `new_password`
-- **Location**: `frontend/src/services/api.ts:60-61`
+- **Fixed**: Removed insecure `supabase.postgrest.auth()` call that doesn't establish valid session
+- **Fixed**: Properly establish authenticated session with `set_session()` before password update
+- **Fixed**: Removed overly broad `AttributeError` catch
+- **Location**: `frontend/src/services/api.ts:60-61`, `backend/app/api/routes/auth.py:242-267`
 
 ### 2. Registration Redirect
 - **Issue**: Missing navigation after registration
@@ -108,7 +111,7 @@ This PR implements comprehensive security improvements, fixes critical user work
 
 ### Backend (8 files)
 - `backend/app/main.py` - Route imports fix
-- `backend/app/api/routes/auth.py` - Rate limiting
+- `backend/app/api/routes/auth.py` - Rate limiting, password reset authentication fix
 - `backend/app/api/routes/analytics.py` - IDOR fix
 - `backend/app/api/routes/integrations.py` - OAuth security
 - `backend/app/schemas/analytics.py` - Field alignment
@@ -147,6 +150,6 @@ All changes are backward compatible and ready for production.
 
 ---
 
-**Commits**: fd73c93, 7251b83, 78ba263, 3b2afb6, b5be330
+**Commits**: e054f83, 4b2c828, fd73c93, 7251b83, 78ba263, 3b2afb6
 **Branch**: `claude/check-codebase-017js6jLorD3nr1kVVtf2sLD`
 **Target**: `main`
