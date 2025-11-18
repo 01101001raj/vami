@@ -5,11 +5,16 @@ from app.services.supabase_service import supabase_service
 from app.services.email_service import email_service
 from app.models.user import SubscriptionPlan
 from datetime import datetime
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/webhooks", tags=["Webhooks"])
 
 
 @router.post("/stripe")
+@limiter.limit("100/minute")  # Allow burst of webhook events
 async def stripe_webhook(request: Request, stripe_signature: str = Header(None)):
     """Handle Stripe webhooks"""
     try:
@@ -77,6 +82,7 @@ async def stripe_webhook(request: Request, stripe_signature: str = Header(None))
 
 
 @router.post("/elevenlabs")
+@limiter.limit("100/minute")  # Allow burst of webhook events
 async def elevenlabs_webhook(
     request: Request,
     xi_signature: str = Header(None, alias="xi-signature"),

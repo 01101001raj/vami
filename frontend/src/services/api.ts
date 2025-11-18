@@ -82,8 +82,8 @@ export const billingAPI = {
 export const integrationsAPI = {
   getGoogleAuthUrl: () => api.get<{ auth_url: string; state: string }>('/integrations/google/auth-url'),
 
-  handleGoogleCallback: (code: string) =>
-    api.post('/integrations/google/callback', { code }),
+  handleGoogleCallback: (code: string, state: string) =>
+    api.post('/integrations/google/callback', { code, state }),
 
   listCalendars: () => api.get('/integrations/google/calendars'),
 

@@ -29,7 +29,15 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    # CSP that allows external integrations (Stripe, Google OAuth, SendGrid)
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "connect-src 'self' https://api.stripe.com https://accounts.google.com https://oauth2.googleapis.com; "
+        "frame-src https://checkout.stripe.com https://js.stripe.com https://accounts.google.com; "
+        "script-src 'self' 'unsafe-inline' https://js.stripe.com; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:;"
+    )
     return response
 
 # CORS middleware
@@ -37,8 +45,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],  # Explicit methods instead of wildcard
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"],  # Explicit headers
 )
 
 # Include routers
