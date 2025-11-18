@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { analyticsAPI } from '../services/api';
 import type { Conversation } from '../types';
 import { format } from 'date-fns';
 import { Phone, Clock, TrendingUp, Filter, Download, Search, Calendar } from 'lucide-react';
 
 export default function AnalyticsPage() {
-  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
 

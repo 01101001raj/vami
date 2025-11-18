@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Phone, Clock, TrendingUp, Calendar } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Phone, Clock, TrendingUp, Calendar, Upload, Settings, BarChart3 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { billingAPI, agentAPI, analyticsAPI } from '../services/api';
 import type { Usage, Agent, DashboardStats } from '../types';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [usage, setUsage] = useState<Usage | null>(null);
   const [agent, setAgent] = useState<Agent | null>(null);
   const [stats, setStats] = useState<DashboardStats | null>(null);

@@ -16,7 +16,7 @@ const ConfirmationStep: React.FC<ConfirmationStepProps> = ({
   phoneNumber,
   agentName,
   businessName,
-  templateKey,
+  templateKey: _templateKey,
   templateName,
   templateIcon,
   onConfirm,

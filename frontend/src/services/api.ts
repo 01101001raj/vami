@@ -1,5 +1,24 @@
 import axios from 'axios';
-import type { AuthResponse, User, Agent, Conversation, Usage, AgentUpdateData, DashboardStats } from '../types';
+import type {
+  AuthResponse,
+  User,
+  Agent,
+  Conversation,
+  Usage,
+  AgentUpdateData,
+  DashboardStats,
+  AgentToken,
+  KnowledgeBaseFile,
+  TeamMember,
+  TeamInvitation,
+  CalendarIntegration,
+  Appointment,
+  AvailabilitySlot,
+  Call,
+  NotificationPreferences,
+  APIKey,
+  Webhook
+} from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 

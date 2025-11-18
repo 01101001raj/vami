@@ -194,7 +194,7 @@ const PricingPage: React.FC = () => {
         {/* Pricing Cards */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
           <div className="grid md:grid-cols-3 gap-8">
-            {PLANS.map((plan, index) => (
+            {PLANS.map((plan) => (
               <div
                 key={plan.id}
                 className={`relative bg-white rounded-2xl shadow-xl border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${

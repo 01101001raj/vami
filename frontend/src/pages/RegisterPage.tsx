@@ -20,7 +20,6 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
   const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
     defaultValues: { plan: 'starter_trial' }
   });

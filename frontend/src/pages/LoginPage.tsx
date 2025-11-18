@@ -25,7 +25,9 @@ export default function LoginPage() {
     try {
       setError('');
       const response = await authAPI.login(data);
-      localStorage.setItem('access_token', response.data.access_token);
+      if (response.data.access_token) {
+        localStorage.setItem('access_token', response.data.access_token);
+      }
       setUser(response.data.user);
       navigate('/dashboard');
     } catch (err) {

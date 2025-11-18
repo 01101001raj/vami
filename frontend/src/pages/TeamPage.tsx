@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Users, Plus, Settings, Mail, Phone, MoreVertical, UserPlus, Shield, Crown } from 'lucide-react';
+import { Users, Plus, Settings, Mail, MoreVertical, UserPlus, Shield, Crown } from 'lucide-react';
 
 interface TeamMember {
   id: number;

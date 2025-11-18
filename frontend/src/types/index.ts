@@ -272,10 +272,19 @@ export interface AgentUpdateData {
   elevenlabs_metadata?: Partial<ElevenLabsMetadata>;
 }
 
+export interface AuthResponse {
+  access_token?: string;
+  token_type: string;
+  user: User;
+  checkout_url?: string;
+}
+
 export interface DashboardStats {
   total_calls: number;
   total_minutes: number;
   successful_calls: number;
   success_rate: number;
   avg_duration_secs: number;
+  appointments_booked?: number;
+  total_conversations?: number;
 }

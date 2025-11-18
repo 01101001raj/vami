@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BusinessInfoStep from './BusinessInfoStep';
-import PricingStep from './PricingStep';
+// import BusinessInfoStep from './BusinessInfoStep';
+// import PricingStep from './PricingStep';
 import CreateAgentStep from './CreateAgentStep';
-import PhoneNumberStep from './PhoneNumberStep';
-import TestAgentStep from './TestAgentStep';
+// import PhoneNumberStep from './PhoneNumberStep';
+// import TestAgentStep from './TestAgentStep';
 
 interface OnboardingData {
   // Business Info
@@ -137,30 +137,24 @@ export default function OnboardingFlow() {
       {/* Step Content */}
       <div className="max-w-4xl mx-auto px-6 py-8">
         {currentStep === 1 && (
-          <BusinessInfoStep
-            data={onboardingData}
-            onNext={(data) => {
-              updateData(data);
-              nextStep();
-            }}
-          />
+          <div className="text-center p-8">
+            <p className="text-gray-600">Business Info Step - To be implemented</p>
+            <button onClick={nextStep} className="btn btn-primary mt-4">Continue</button>
+          </div>
         )}
 
         {currentStep === 2 && (
-          <PricingStep
-            data={onboardingData}
-            onNext={(data) => {
-              updateData(data);
-              nextStep();
-            }}
-            onBack={prevStep}
-          />
+          <div className="text-center p-8">
+            <p className="text-gray-600">Pricing Step - To be implemented</p>
+            <button onClick={nextStep} className="btn btn-primary mt-4">Continue</button>
+            <button onClick={prevStep} className="btn btn-secondary mt-4 ml-2">Back</button>
+          </div>
         )}
 
         {currentStep === 3 && (
           <CreateAgentStep
             data={onboardingData}
-            onNext={(data) => {
+            onNext={(data: any) => {
               updateData(data);
               nextStep();
             }}
@@ -169,23 +163,19 @@ export default function OnboardingFlow() {
         )}
 
         {currentStep === 4 && (
-          <PhoneNumberStep
-            data={onboardingData}
-            onNext={(data) => {
-              updateData(data);
-              nextStep();
-            }}
-            onBack={prevStep}
-            onSkip={() => nextStep()}
-          />
+          <div className="text-center p-8">
+            <p className="text-gray-600">Phone Number Step - To be implemented</p>
+            <button onClick={nextStep} className="btn btn-primary mt-4">Continue</button>
+            <button onClick={prevStep} className="btn btn-secondary mt-4 ml-2">Back</button>
+          </div>
         )}
 
         {currentStep === 5 && (
-          <TestAgentStep
-            data={onboardingData}
-            onFinish={() => navigate('/dashboard')}
-            onBack={prevStep}
-          />
+          <div className="text-center p-8">
+            <p className="text-gray-600">Test Agent Step - To be implemented</p>
+            <button onClick={() => navigate('/dashboard')} className="btn btn-primary mt-4">Finish</button>
+            <button onClick={prevStep} className="btn btn-secondary mt-4 ml-2">Back</button>
+          </div>
         )}
       </div>
     </div>
