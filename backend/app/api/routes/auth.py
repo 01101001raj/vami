@@ -173,7 +173,7 @@ async def get_me(user: User = Depends(get_current_user)):
 
 @router.post("/forgot-password")
 @limiter.limit("3/hour")
-async def forgot_password(http_request: Request, email: str):
+async def forgot_password(request: Request, email: str):
     """
     Send password reset email
 
@@ -205,7 +205,7 @@ async def forgot_password(http_request: Request, email: str):
 
 @router.post("/reset-password")
 @limiter.limit("5/hour")
-async def reset_password(http_request: Request, access_token: str, new_password: str):
+async def reset_password(request: Request, access_token: str, new_password: str):
     """
     Reset password with access token from password reset email
     Note: Supabase sends reset email with access_token parameter
