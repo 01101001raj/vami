@@ -1,7 +1,11 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.api.routes import auth, agents, analytics, billing, webhooks, integrations
+from app.api.routes import (
+    auth, agents, analytics, billing, webhooks, integrations,
+    team, calls, calendar, agent_actions, phone_numbers, templates
+)
+from app.api.routes import settings as settings_routes
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
