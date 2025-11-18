@@ -169,27 +169,57 @@ async def get_me(user: User = Depends(get_current_user)):
 async def forgot_password(email: str):
     """
     Send password reset email
+
+    Supabase will send an email with a reset link to:
+    {FRONTEND_URL}/reset-password?token=xxx
     """
     try:
         supabase = get_supabase()
-        supabase.auth.reset_password_email(email)
-        return {"message": "Password reset email sent"}
+
+        # Send password reset email via Supabase
+        # This will send an email with a magic link
+        supabase.auth.reset_password_for_email(
+            email,
+            {
+                "redirect_to": f"{settings.FRONTEND_URL}/reset-password"
+            }
+        )
+
+        # Always return success to prevent email enumeration
+        return {
+            "message": "If an account exists with this email, you will receive a password reset link shortly"
+        }
     except Exception as e:
-        # Don't reveal if email exists or not
-        return {"message": "If the email exists, a password reset link has been sent"}
+        # Don't reveal if email exists or not (security best practice)
+        return {
+            "message": "If an account exists with this email, you will receive a password reset link shortly"
+        }
 
 
 @router.post("/reset-password")
-async def reset_password(token: str, new_password: str):
+async def reset_password(token: str, password: str):
     """
-    Reset password with token
+    Reset password with access token from email link
+
+    The user receives an email with a magic link containing an access_token.
+    This endpoint uses that token to set a new password.
     """
     try:
         supabase = get_supabase()
-        supabase.auth.update_user({"password": new_password})
-        return {"message": "Password reset successfully"}
+
+        # Set the session with the access token from the email
+        supabase.auth.set_session(token, token)
+
+        # Update the user's password
+        supabase.auth.update_user({
+            "password": password
+        })
+
+        return {
+            "message": "Password reset successfully. You can now login with your new password."
+        }
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Failed to reset password"
+            detail=f"Failed to reset password: {str(e)}"
         )

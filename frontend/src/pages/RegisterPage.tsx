@@ -31,13 +31,8 @@ export default function RegisterPage() {
       }
       setUser(response.data.user);
 
-      if (response.data.checkout_url) {
-        // Redirect to Stripe checkout for payment setup
-        window.location.href = response.data.checkout_url;
-      } else {
-        // No payment needed, go straight to dashboard (trial mode)
-        navigate('/dashboard');
-      }
+      // After registration, redirect to pricing page to select plan
+      navigate('/pricing');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
     }

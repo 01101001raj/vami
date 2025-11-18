@@ -14,6 +14,32 @@
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    letter-spacing: -0.01em;
+  }
+
+  /* Typography hierarchy */
+  .text-h1 {
+    @apply text-3xl font-bold tracking-tight text-slate-900;
+  }
+
+  .text-h2 {
+    @apply text-xl font-bold tracking-tight text-slate-900;
+  }
+
+  .text-h3 {
+    @apply text-lg font-semibold text-slate-900;
+  }
+
+  .text-body {
+    @apply text-base text-slate-600 leading-relaxed;
+  }
+
+  .text-body-sm {
+    @apply text-sm text-slate-600;
+  }
+
+  .text-caption {
+    @apply text-xs text-slate-500;
   }
 
   /* Improved focus styles */
@@ -49,15 +75,20 @@
   /* ==================== BUTTONS ==================== */
 
   .btn {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-sm hover:shadow-md;
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 shadow-md hover:shadow-lg focus:ring-primary-600;
+    box-shadow: 0 4px 12px -2px rgba(5, 150, 105, 0.25);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 8px 20px -4px rgba(5, 150, 105, 0.35);
   }
 
   .btn-secondary {
-    @apply bg-white border-2 border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-primary-600 shadow-sm hover:shadow-md;
+    @apply bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow-md focus:ring-slate-400;
   }
 
   .btn-ghost {
@@ -65,83 +96,104 @@
   }
 
   .btn-sm {
-    @apply px-4 py-2 text-sm;
+    @apply px-4 py-2.5 text-xs;
   }
 
   .btn-lg {
-    @apply px-8 py-4 text-lg;
+    @apply px-8 py-4 text-base;
   }
 
   /* ==================== CARDS ==================== */
 
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-slate-200 p-6 transition-all duration-300;
+    @apply bg-white rounded-2xl p-8 transition-all duration-300;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
   }
 
   .card-hover {
-    @apply hover:shadow-md hover:border-primary-200 hover:-translate-y-1 transition-all duration-300;
+    @apply hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.05);
   }
 
   .card-interactive {
-    @apply cursor-pointer hover:shadow-lg hover:border-primary-300 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200;
+    @apply cursor-pointer hover:border-primary-200 hover:-translate-y-1 active:scale-[0.99] transition-all duration-200;
+  }
+
+  .card-interactive:hover {
+    box-shadow: 0 8px 20px -4px rgba(5, 150, 105, 0.12), 0 4px 12px -4px rgba(5, 150, 105, 0.08);
   }
 
   /* ==================== FORMS ==================== */
 
   .input {
-    @apply w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all text-slate-900 placeholder:text-slate-400;
+    @apply w-full px-4 py-3.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all text-slate-900 placeholder:text-slate-400 bg-white;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  }
+
+  .input:hover {
+    @apply border-slate-300;
+  }
+
+  .input:focus {
+    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1), 0 1px 2px 0 rgba(15, 23, 42, 0.04);
   }
 
   .input-error {
-    @apply border-error focus:ring-error;
+    @apply border-red-300 focus:ring-red-600;
   }
 
   .input-success {
-    @apply border-success focus:ring-success;
+    @apply border-emerald-300 focus:ring-emerald-600;
   }
 
   .label {
-    @apply block text-sm font-semibold text-slate-700 mb-2;
+    @apply block text-sm font-semibold text-slate-700 mb-2.5;
   }
 
   .helper-text {
-    @apply text-sm text-slate-500 mt-1.5;
+    @apply text-sm text-slate-500 mt-2;
   }
 
   .error-text {
-    @apply text-sm text-error mt-1.5 flex items-center gap-1;
+    @apply text-sm text-red-600 mt-2 flex items-center gap-1.5;
   }
 
   /* ==================== BADGES ==================== */
 
   .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200;
   }
 
   .badge-success {
-    @apply bg-primary-100 text-primary-800;
+    @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
   }
 
   .badge-warning {
-    @apply bg-yellow-100 text-yellow-800;
+    @apply bg-amber-50 text-amber-700 border border-amber-200;
   }
 
   .badge-error {
-    @apply bg-red-100 text-red-800;
+    @apply bg-red-50 text-red-700 border border-red-200;
   }
 
   .badge-info {
-    @apply bg-blue-100 text-blue-800;
+    @apply bg-blue-50 text-blue-700 border border-blue-200;
   }
 
   .badge-neutral {
-    @apply bg-slate-100 text-slate-700;
+    @apply bg-slate-50 text-slate-700 border border-slate-200;
   }
 
   /* ==================== TABLES ==================== */
 
   .table-container {
-    @apply bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden;
+    @apply bg-white rounded-2xl overflow-hidden;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
   }
 
   .table {
@@ -149,41 +201,52 @@
   }
 
   .table thead {
-    @apply bg-slate-50 border-b-2 border-slate-200;
+    @apply bg-slate-50/80 border-b border-slate-200;
   }
 
   .table th {
-    @apply px-6 py-4 text-left text-sm font-semibold text-slate-600;
+    @apply px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider;
   }
 
   .table td {
-    @apply px-6 py-4 text-sm text-slate-700 border-b border-slate-100;
+    @apply px-6 py-5 text-sm text-slate-700;
   }
 
   .table tbody tr {
-    @apply hover:bg-slate-50 transition-colors;
+    @apply border-b border-slate-100 hover:bg-slate-50/50 transition-all duration-150;
+  }
+
+  .table tbody tr:last-child {
+    @apply border-b-0;
   }
 
   /* ==================== METRICS ==================== */
 
   .metric-card {
-    @apply bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md hover:border-primary-200 transition-all duration-300 hover:-translate-y-1;
+    @apply bg-white rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  }
+
+  .metric-card:hover {
+    border-color: rgba(5, 150, 105, 0.2);
+    box-shadow: 0 4px 12px -2px rgba(5, 150, 105, 0.08), 0 2px 6px -2px rgba(5, 150, 105, 0.05);
   }
 
   .metric-value {
-    @apply text-3xl font-bold text-slate-900;
+    @apply text-3xl font-bold text-slate-900 tracking-tight;
   }
 
   .metric-label {
-    @apply text-sm font-medium text-slate-600;
+    @apply text-sm font-semibold text-slate-600 uppercase tracking-wide;
   }
 
   .metric-trend-positive {
-    @apply text-sm font-semibold text-success flex items-center gap-1;
+    @apply text-xs font-bold text-emerald-600 flex items-center gap-1;
   }
 
   .metric-trend-negative {
-    @apply text-sm font-semibold text-error flex items-center gap-1;
+    @apply text-xs font-bold text-red-600 flex items-center gap-1;
   }
 
   /* ==================== PROGRESS BARS ==================== */

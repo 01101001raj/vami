@@ -186,52 +186,24 @@ export default function SettingsPage() {
           </div>
         </div>
         <div className="p-6">
-          <div className="space-y-6">
-            <div>
-              <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
-                <User className="w-4 h-4 text-gray-500" />
-                <span>Agent Name</span>
-              </label>
-              <input
-                type="text"
-                placeholder="e.g., Sarah - Medical Assistant"
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              />
-              <p className="text-xs text-gray-500 mt-1.5">Give your AI agent a memorable name</p>
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8 text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <User className="w-8 h-8 text-white" />
             </div>
-
-            <div>
-              <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span>Business Hours</span>
-              </label>
-              <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all bg-white">
-                <option>24/7 - Always Available</option>
-                <option>Business Hours (9 AM - 5 PM)</option>
-                <option>Extended Hours (8 AM - 8 PM)</option>
-                <option>Custom Schedule</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1.5">When your agent should accept calls</p>
-            </div>
-
-            <div>
-              <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
-                <Globe className="w-4 h-4 text-gray-500" />
-                <span>Language</span>
-              </label>
-              <select className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all bg-white">
-                <option>English (US)</option>
-                <option>English (UK)</option>
-                <option>Spanish</option>
-                <option>French</option>
-                <option>German</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1.5">Primary language for conversations</p>
-            </div>
-
-            <button className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg">
-              Save Agent Settings
-            </button>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Manage Your AI Agent</h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Configure your agent's name, voice, personality, phone number, and other settings in one convenient place.
+            </p>
+            <a
+              href="/agent-settings"
+              className="inline-flex items-center space-x-2 px-8 py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <Zap className="w-5 h-5" />
+              <span>Go to Agent Settings</span>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ from app.models.agent import Agent
 from app.models.conversation import Conversation
 from app.models.subscription import UsageRecord
 from decimal import Decimal
+import secrets
 
 
 class SupabaseService:
@@ -226,6 +227,22 @@ class SupabaseService:
         updates["updated_at"] = datetime.utcnow().isoformat()
         result = self.db.table("agents").update(updates).eq("id", agent_id).execute()
         return result.data[0] if result.data else None
+
+    async def regenerate_agent_token(self, agent_id: str, user_id: str) -> str:
+        """Regenerate API token for agent"""
+        # Generate new secure token
+        new_token = f"vami_agent_{secrets.token_urlsafe(32)}"
+
+        # Update agent with new token
+        result = self.db.table("agents").update({
+            "api_token": new_token,
+            "updated_at": datetime.utcnow().isoformat()
+        }).eq("agent_id", agent_id).eq("user_id", user_id).execute()
+
+        if not result.data:
+            raise ValueError("Agent not found or access denied")
+
+        return new_token
 
     async def update_calendar_connection(self, connection_id: int, updates: Dict[str, Any]):
         """Update calendar connection"""

@@ -16,7 +16,16 @@
       "Bash(venv/Scripts/uvicorn app.main:app --reload)",
       "Bash(curl:*)",
       "Bash(test:*)",
-      "Bash(venv/Scripts/python:*)"
+      "Bash(venv/Scripts/python:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(venvScriptsuvicorn app.main:app --reload)",
+      "Bash(timeout:*)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(ping:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

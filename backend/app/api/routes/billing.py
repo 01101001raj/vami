@@ -7,8 +7,38 @@ from app.models.user import User
 from app.config import settings
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/billing", tags=["Billing"])
+
+
+class CreateCheckoutSessionRequest(BaseModel):
+    price_id: str
+    plan: str
+    billing_cycle: str
+
+
+@router.post("/create-checkout-session")
+async def create_checkout_session(
+    request: CreateCheckoutSessionRequest,
+    user: User = Depends(get_current_user)
+):
+    """
+    Create Stripe checkout session for the pricing page
+
+    This endpoint is called from the payment page after user selects a plan.
+    It creates a Stripe checkout session and returns the URL to redirect to.
+    """
+    try:
+        checkout_url = await stripe_service.create_checkout_session(
+            customer_id=user.stripe_customer_id,
+            plan=request.plan,
+            success_url=f"{settings.FRONTEND_URL}/payment-success",
+            cancel_url=f"{settings.FRONTEND_URL}/pricing"
+        )
+        return {"checkout_url": checkout_url}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.post("/create-checkout")
@@ -16,7 +46,7 @@ async def create_checkout(
     request: CheckoutRequest,
     user: User = Depends(get_current_user)
 ):
-    """Create Stripe checkout session"""
+    """Create Stripe checkout session (legacy endpoint)"""
     checkout_url = await stripe_service.create_checkout_session(
         customer_id=user.stripe_customer_id,
         plan=request.plan,

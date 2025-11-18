@@ -1,0 +1,575 @@
+{
+  "info": {
+    "name": "Vami Platform API",
+    "description": "Complete collection of Vami Platform API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "vami-platform"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "agent_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.environment.set('user_id', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"company_name\": \"Test Clinic\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    pm.environment.set('access_token', json.access_token);",
+                  "    pm.environment.set('agent_id', json.agent.agent_id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agents",
+      "item": [
+        {
+          "name": "Get Agent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents"]
+            }
+          }
+        },
+        {
+          "name": "Update Agent",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agent_name\": \"Updated Agent Name\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent API Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}/api-token",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}", "api-token"]
+            }
+          }
+        },
+        {
+          "name": "Regenerate Agent Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}/regenerate-token",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}", "regenerate-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Knowledge Base",
+      "item": [
+        {
+          "name": "Upload File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agents/knowledge-base/upload?agent_id={{agent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "knowledge-base", "upload"],
+              "query": [
+                {
+                  "key": "agent_id",
+                  "value": "{{agent_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Files",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/knowledge-base/files?agent_id={{agent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "knowledge-base", "files"],
+              "query": [
+                {
+                  "key": "agent_id",
+                  "value": "{{agent_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete File",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/knowledge-base/:file_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "knowledge-base", ":file_id"],
+              "variable": [
+                {
+                  "key": "file_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/analytics/stats?days=7",
+              "host": ["{{base_url}}"],
+              "path": ["api", "analytics", "stats"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Conversations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/analytics/conversations?page=1&per_page=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "analytics", "conversations"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Conversation Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/analytics/conversation/:conversation_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "analytics", "conversation", ":conversation_id"],
+              "variable": [
+                {
+                  "key": "conversation_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "Get Subscription",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/billing/subscription",
+              "host": ["{{base_url}}"],
+              "path": ["api", "billing", "subscription"]
+            }
+          }
+        },
+        {
+          "name": "Get Usage",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/billing/usage",
+              "host": ["{{base_url}}"],
+              "path": ["api", "billing", "usage"]
+            }
+          }
+        },
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price_id\": \"price_professional_monthly\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/billing/create-checkout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "billing", "create-checkout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team",
+      "item": [
+        {
+          "name": "Get Team Members",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/team/members",
+              "host": ["{{base_url}}"],
+              "path": ["api", "team", "members"]
+            }
+          }
+        },
+        {
+          "name": "Invite Team Member",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newmember@example.com\",\n  \"role\": \"viewer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/team/invite",
+              "host": ["{{base_url}}"],
+              "path": ["api", "team", "invite"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Calendar",
+      "item": [
+        {
+          "name": "Get Google OAuth URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/integrations/google/auth-url",
+              "host": ["{{base_url}}"],
+              "path": ["api", "integrations", "google", "auth-url"]
+            }
+          }
+        },
+        {
+          "name": "Disconnect Calendar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/integrations/google/disconnect",
+              "host": ["{{base_url}}"],
+              "path": ["api", "integrations", "google", "disconnect"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agent Actions (ElevenLabs)",
+      "item": [
+        {
+          "name": "Check Availability",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Agent-Token",
+                "value": "{{agent_api_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2025-11-15\",\n  \"duration_minutes\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agent-actions/check-availability/{{agent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agent-actions", "check-availability", "{{agent_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Book Appointment",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Agent-Token",
+                "value": "{{agent_api_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_name\": \"John Doe\",\n  \"patient_phone\": \"+1234567890\",\n  \"patient_email\": \"john@example.com\",\n  \"date\": \"2025-11-15\",\n  \"time\": \"14:00\",\n  \"duration_minutes\": 30,\n  \"reason\": \"Annual checkup\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agent-actions/book-appointment/{{agent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agent-actions", "book-appointment", "{{agent_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Today's Appointments",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Agent-Token",
+                "value": "{{agent_api_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agent-actions/appointments/{{agent_id}}/today",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agent-actions", "appointments", "{{agent_id}}", "today"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Test ElevenLabs Webhook",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"post_call_transcription\",\n  \"data\": {\n    \"conversation_id\": \"test_conv_123\",\n    \"agent_id\": \"{{agent_id}}\",\n    \"duration_secs\": 180,\n    \"call_successful\": \"success\",\n    \"summary\": \"Test conversation summary\",\n    \"title\": \"Test Call\",\n    \"sentiment\": \"positive\",\n    \"intent\": \"appointment\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/webhooks/elevenlabs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "webhooks", "elevenlabs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    }
+  ]
+}

@@ -1,12 +1,36 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { analyticsAPI } from '../services/api';
 import type { Conversation } from '../types';
 import { format } from 'date-fns';
 import { Phone, Clock, TrendingUp, Filter, Download, Search, Calendar } from 'lucide-react';
 
 export default function AnalyticsPage() {
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleExport = () => {
+    // Export functionality - convert conversations to CSV
+    const csvContent = [
+      ['Date', 'Title', 'Duration', 'Sentiment', 'Status'].join(','),
+      ...conversations.map(conv => [
+        format(new Date(conv.created_at), 'yyyy-MM-dd HH:mm'),
+        conv.title || 'Untitled',
+        conv.duration_secs ? `${Math.round(conv.duration_secs / 60)}m ${conv.duration_secs % 60}s` : '-',
+        conv.sentiment || '-',
+        conv.call_successful || '-'
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -53,11 +77,11 @@ export default function AnalyticsPage() {
           <p className="text-body text-slate-600">Detailed insights into your call performance</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="btn btn-secondary">
+          <button className="btn btn-secondary" onClick={() => console.log('Filter clicked - functionality coming soon')}>
             <Filter className="w-4 h-4" />
             Filter
           </button>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={handleExport}>
             <Download className="w-4 h-4" />
             Export
           </button>
